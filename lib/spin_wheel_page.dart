@@ -17,51 +17,8 @@ class SpinWheelPage extends StatelessWidget {
           backgroundColor: Colors.deepPurple,
         ),
         body: Consumer<SpinWheelProvider>(
-          builder: (context, provider, _) => Column(
-            spacing: 20,
-            children: [
-              Text(
-                'Bugün kalan deneme sayısı: ${provider.remainingSpins}',
-                style: const TextStyle(color: Colors.white),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: provider.items.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemBuilder: (context, index) {
-                    return SpinWheelWidget(
-                      item: provider.items[index],
-                      selected: provider.selectedIndex == index,
-                    );
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => provider.spinOnce(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    child: const Text('1 Kez Döndür'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                    ),
-                    child: const Text('10 Kez Döndür'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          builder: (context, provider, _) =>
+              SpinWheelWidget(provider: provider),
         ),
       ),
     );
@@ -69,7 +26,65 @@ class SpinWheelPage extends StatelessWidget {
 }
 
 class SpinWheelWidget extends StatelessWidget {
-  const SpinWheelWidget({
+  const SpinWheelWidget({super.key, required this.provider});
+  final SpinWheelProvider provider;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 20,
+      children: [
+        Text(
+          'Bugün kalan deneme sayısı: ${provider.remainingSpins}',
+          style: const TextStyle(color: Colors.white),
+        ),
+        Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: provider.items.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 2,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) {
+              return SpinWheelContainer(
+                item: provider.items[index],
+                selected: provider.selectedIndex == index,
+              );
+            },
+          ),
+        ),
+        SpinWheelPageButtons(provider: provider),
+      ],
+    );
+  }
+}
+
+class SpinWheelPageButtons extends StatelessWidget {
+  const SpinWheelPageButtons({super.key, required this.provider});
+  final SpinWheelProvider provider;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: () => provider.spinOnce(),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          child: const Text('1 Kez Döndür'),
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+          child: const Text('10 Kez Döndür'),
+        ),
+      ],
+    );
+  }
+}
+
+class SpinWheelContainer extends StatelessWidget {
+  const SpinWheelContainer({
     super.key,
     required this.item,
     required this.selected,
