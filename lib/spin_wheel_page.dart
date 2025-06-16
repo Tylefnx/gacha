@@ -10,15 +10,17 @@ class SpinWheelPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => SpinWheelProvider(),
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          title: const Text('Carkı Çevir'),
-          backgroundColor: Colors.deepPurple,
-        ),
-        body: Consumer<SpinWheelProvider>(
-          builder: (context, provider, _) =>
-              SpinWheelWidget(provider: provider),
+      child: MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            title: const Text('Carkı Çevir'),
+            backgroundColor: Colors.deepPurple,
+          ),
+          body: Consumer<SpinWheelProvider>(
+            builder: (context, provider, _) =>
+                SpinWheelWidget(provider: provider),
+          ),
         ),
       ),
     );
