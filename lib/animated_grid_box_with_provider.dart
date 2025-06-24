@@ -13,14 +13,13 @@ class AnimatedGridBoxWithProvider extends StatefulWidget {
 class _AnimatedGridBoxWithProviderState
     extends State<AnimatedGridBoxWithProvider>
     with SingleTickerProviderStateMixin {
-  late AnimationController
-  _animationController; // Nihai animasyon için kontrolcü
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 700), // Nihai animasyon süresi
+      duration: const Duration(milliseconds: 700),
       vsync: this,
     );
   }
@@ -31,137 +30,221 @@ class _AnimatedGridBoxWithProviderState
     super.dispose();
   }
 
+  BoxDecoration _getBoxDecoration(
+    int index,
+    bool isHighlighted,
+    bool isAnimated,
+  ) {
+    Color outerBorderBaseColor = Colors.white.withOpacity(0.3);
+    List<Color> gradientColors;
+    Color outerBorderColor = outerBorderBaseColor;
+
+    if ([0, 1, 5, 9].contains(index)) {
+      gradientColors = [const Color(0xFF3366CC), const Color(0xFF4A90E2)];
+    } else if ([4, 8, 12, 13].contains(index)) {
+      gradientColors = [const Color(0xFF8A2BE2), const Color(0xFF9966CC)];
+    } else {
+      gradientColors = [const Color(0xFFFF8C00), const Color(0xFFFFA500)];
+    }
+
+    if (isHighlighted) {
+      gradientColors = [Colors.yellow.shade300, Colors.yellow.shade600];
+      outerBorderColor = Colors.white;
+    }
+
+    if (isAnimated) {
+      outerBorderColor = Colors.greenAccent;
+    }
+
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(5.0),
+      gradient: LinearGradient(
+        colors: gradientColors,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      border: Border.all(color: outerBorderColor, width: 3.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.5),
+          spreadRadius: 0.5,
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+        if (isHighlighted || isAnimated)
+          BoxShadow(
+            color: isHighlighted
+                ? Colors.yellow.withOpacity(0.7)
+                : Colors.greenAccent.withOpacity(0.7),
+            spreadRadius: 4,
+            blurRadius: 15,
+            offset: Offset.zero,
+          ),
+      ],
+    );
+  }
+
   Widget _buildGridItem(BuildContext context, int index) {
     final gridState = Provider.of<GridStateNotifier>(context);
     final bool isCenterBox = ([5, 6, 9, 10].contains(index));
     final bool isAnimated = (gridState.animatedBoxIndex == index);
-    final bool isHighlighted =
-        (gridState.highlightedBoxIndex == index); // Yeni vurgu kontrolü
+    final bool isHighlighted = (gridState.highlightedBoxIndex == index);
 
-    if (isCenterBox) {
-      return const SizedBox.shrink();
-    }
+    if (isCenterBox) return const SizedBox.shrink();
 
-    // Kutucuğun temel içeriği
-    Widget boxContent = Container(
-      decoration: BoxDecoration(
-        color: isHighlighted
-            ? Colors.yellow[200]
-            : Colors.blueGrey[100], // Vurgu rengi
-        border: Border.all(color: Colors.black, width: 0.5),
-      ),
-      child: Center(
-        child: Image.network(
-          gridState.getBoxImageUrl(index),
-          fit: BoxFit.cover,
-          width: 80,
-          height: 80,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
-                strokeWidth: 2,
-              ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.broken_image, color: Colors.grey, size: 40),
-        ),
-      ),
+    Widget itemContent = GridContent(
+      gridStateNotifier: gridState,
+      index: index,
     );
 
-    // Eğer bu kutucuk nihai olarak canlandırılacaksa, animasyonu uygula
+    Widget boxContainer = Container(
+      margin: const EdgeInsets.all(6.0),
+      decoration: _getBoxDecoration(index, isHighlighted, isAnimated),
+      child: itemContent,
+    );
+
     if (isAnimated) {
-      _animationController.forward(from: 0.0); // Animasyonu başlat
+      _animationController.forward(from: 0.0);
       return ScaleTransition(
         scale: Tween<double>(begin: 1.0, end: 1.15).animate(
           CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
         ),
-        child: boxContent,
+        child: boxContainer,
       );
     } else {
-      // Eğer highlight ediliyorsa, sadece rengi değiştiği için ek bir animasyon widgetına gerek yok.
-      // Ya da turlama için de hafif bir animasyon eklenebilir (örn: Opacity)
-      return boxContent;
+      return boxContainer;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gelişmiş 4x4 Grid Widget'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
-      body: Center(
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Stack(
-            children: [
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 1.0,
-                  crossAxisSpacing: 0,
-                  mainAxisSpacing: 0,
+    return Center(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final double gridWidth = constraints.maxWidth.clamp(300.0, 600.0);
+          const double margin = 12.0;
+          const double itemCountPerRow = 4;
+          final double itemSize =
+              (gridWidth - (itemCountPerRow * margin)) / itemCountPerRow;
+          final double centerBoxSize = (itemSize * 2) + margin;
+
+          return Container(
+            padding: const EdgeInsets.all(10.0),
+            margin: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFF330066),
+              borderRadius: BorderRadius.circular(36.0),
+              border: Border.all(color: Color(0xffAF97DC), width: 3.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.7),
+                  spreadRadius: -5,
+                  blurRadius: 15,
                 ),
-                itemCount: 16,
-                itemBuilder: (context, index) {
-                  return _buildGridItem(context, index);
-                },
-              ),
-              Positioned(
-                top: MediaQuery.of(context).size.width / 4,
-                left: MediaQuery.of(context).size.width / 4,
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.width / 2,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.red, width: 3),
-                    image: const DecorationImage(
-                      image: NetworkImage(
-                        'https://via.placeholder.com/300/FF0000/FFFFFF?text=MERKEZ',
-                      ),
-                      fit: BoxFit.cover,
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.7),
+                  spreadRadius: 5,
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF200040),
+                      borderRadius: BorderRadius.circular(16.0),
                     ),
                   ),
-                  child: const Center(
-                    child: Text(
-                      'Merkez',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        shadows: [Shadow(blurRadius: 5, color: Colors.black)],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              childAspectRatio: 1.0,
+                            ),
+                        itemCount: 16,
+                        itemBuilder: (context, index) {
+                          return _buildGridItem(context, index);
+                        },
                       ),
                     ),
                   ),
-                ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: centerBoxSize,
+                      height: centerBoxSize,
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Icon(
+                              Icons.card_giftcard,
+                              size: centerBoxSize * 0.6,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Turlama ve seçimi başlatacak yeni metodu çağır
-          Provider.of<GridStateNotifier>(
-            context,
-            listen: false,
-          ).startSpinningAndSelect();
-          _animationController.reset(); // Nihai animasyon kontrolcüsünü sıfırla
+            ),
+          );
         },
-        tooltip: 'Rastgele kutu seç ve canlandır',
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.shuffle),
+      ),
+    );
+  }
+}
+
+class GridContent extends StatelessWidget {
+  const GridContent({
+    super.key,
+    required this.gridStateNotifier,
+    required this.index,
+  });
+
+  final GridStateNotifier gridStateNotifier;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Image.network(
+        gridStateNotifier.getBoxImageUrl(index),
+        fit: BoxFit.contain,
+        width: 70,
+        height: 70,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                  : null,
+              strokeWidth: 2,
+              color: Colors.white70,
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.broken_image, color: Colors.white54, size: 40),
       ),
     );
   }
