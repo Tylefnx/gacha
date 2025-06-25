@@ -41,7 +41,7 @@ class GachaPage extends StatelessWidget {
                 maxPoints: 75,
               ),
               RewardProgressBarWithMilestones(
-                currentPoints: 45,
+                currentPoints: 44,
                 milestones: [40, 80, 120, 160],
               ),
               AnimatedGridBoxWithProvider(),

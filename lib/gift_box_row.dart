@@ -18,7 +18,7 @@ class GiftBoxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double totalWidth = constraints.maxWidth;
+        final double totalWidth = constraints.maxWidth + 30;
 
         const double circleRadius = 15;
 
@@ -71,7 +71,7 @@ class GiftBoxRow extends StatelessWidget {
                       progressWidth - circleRadius,
                     );
                 return Positioned(
-                  left: centerX - 48,
+                  left: centerX - 53,
                   top: 0,
                   child: Card(
                     color: currentPoints >= milestone

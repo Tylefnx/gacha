@@ -194,7 +194,7 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
                   height: height,
                   child: CustomPaint(
                     painter: StrippedProgressPainter(
-                      progress: progress,
+                      progress: progress + 0.05,
                       cornerRadius: height / 2,
                     ),
                   ),
@@ -213,7 +213,7 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
                 );
 
                 return Positioned(
-                  left: clampedLeftPos,
+                  left: clampedLeftPos + milestoneRadius + 20,
                   top: (height / 2) - milestoneRadius,
                   child: _buildMilestoneCircle(
                     milestone,
