@@ -49,7 +49,6 @@ class GiftBoxRow extends StatelessWidget {
           height: containerHeight,
           child: Stack(
             children: [
-              // Yazıyı sol tarafa yerleştir
               Positioned(
                 left: 0,
                 top: 0,
@@ -62,11 +61,8 @@ class GiftBoxRow extends StatelessWidget {
                         TextSpan(
                           text: ' / $maxPoints',
                           style: textStyle.copyWith(
-                            fontSize:
-                                textStyle.fontSize! * 0.7, // %70'ine indir
-                            color: textStyle.color?.withOpacity(
-                              0.8,
-                            ), // Hafif silikleştir istersen
+                            fontSize: textStyle.fontSize! * 0.7,
+                            color: textStyle.color?.withOpacity(0.8),
                           ),
                         ),
                       ],
@@ -75,7 +71,6 @@ class GiftBoxRow extends StatelessWidget {
                 ),
               ),
 
-              // Kutuları sağ tarafa kaydır
               ...milestones.map((milestone) {
                 final double calculatedMaxPoints = (milestones.last + 20)
                     .toDouble();

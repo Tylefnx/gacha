@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 
 class AnimatedGridBoxWithProvider extends StatelessWidget {
   const AnimatedGridBoxWithProvider({super.key});
@@ -60,6 +61,13 @@ class MainGridContainer extends StatelessWidget {
             spreadRadius: 5,
             blurRadius: 15,
             offset: const Offset(0, 5),
+          ),
+          BoxShadow(
+            color: Colors.white.withOpacity(0.7),
+            spreadRadius: 5,
+            blurRadius: 15,
+            inset: true,
+            offset: const Offset(4, 4),
           ),
         ],
       ),
@@ -215,6 +223,13 @@ class GridContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Icon(Icons.abc));
+    return Center(
+      child: Image.asset(
+        'assets/card.png',
+        fit: BoxFit.cover,
+        width: 50,
+        height: 50,
+      ),
+    );
   }
 }

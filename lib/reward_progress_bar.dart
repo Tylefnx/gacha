@@ -23,7 +23,6 @@ class StrippedProgressPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Ensure cornerRadius is not too large for the given size
     final double adjustedCornerRadius = math.min(cornerRadius, size.height / 2);
 
     final RRect outerRect = RRect.fromRectAndRadius(
@@ -32,8 +31,7 @@ class StrippedProgressPainter extends CustomPainter {
     );
 
     final Paint outerBackgroundPaint = Paint()
-      ..color =
-          const Color(0xFFDCC8A0) // Outer background color
+      ..color = const Color(0xFFDCC8A0)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(outerRect, outerBackgroundPaint);
 
@@ -43,7 +41,6 @@ class StrippedProgressPainter extends CustomPainter {
       ..strokeWidth = borderWidth;
     canvas.drawRRect(outerRect, outerBorderPaint);
 
-    // Calculate inner rectangle dimensions
     final Rect innerRect = Rect.fromLTWH(
       borderWidth + innerPadding,
       borderWidth + innerPadding,
@@ -51,7 +48,6 @@ class StrippedProgressPainter extends CustomPainter {
       size.height - (borderWidth + innerPadding) * 2,
     );
 
-    // Ensure inner corner radius is valid
     final double innerCornerRadius = math.max(
       0.0,
       adjustedCornerRadius - borderWidth - innerPadding,
@@ -67,7 +63,6 @@ class StrippedProgressPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     canvas.drawRRect(innerRRect, innerBackgroundPaint);
 
-    // Calculate the width of the progress fill
     final double currentWidth = innerRect.width * progress;
     final Rect progressRect = Rect.fromLTWH(
       innerRect.left,
@@ -76,7 +71,6 @@ class StrippedProgressPainter extends CustomPainter {
       innerRect.height,
     );
 
-    // Determine the corner radii for the progress bar, only rounding the right side if full
     final RRect progressRRect = RRect.fromRectAndCorners(
       progressRect,
       topLeft: Radius.circular(innerCornerRadius),
@@ -92,7 +86,6 @@ class StrippedProgressPainter extends CustomPainter {
     final Paint progressPaint = Paint()..color = progressColor;
     canvas.drawRRect(progressRRect, progressPaint);
 
-    // Calculate a darker shade of the progress color for stripes
     final Color darkerAmber = Color.alphaBlend(
       Colors.black.withOpacity(0.1),
       progressColor,
@@ -100,31 +93,19 @@ class StrippedProgressPainter extends CustomPainter {
 
     final Paint stripePaint = Paint()
       ..color = darkerAmber
-      ..strokeWidth = 7.5; // Stripe thickness
+      ..strokeWidth = 7.5;
 
-    const double stripeSpacing = 15.0; // Space between stripes
-    const double angle =
-        -math.pi / -4; // Angle of the stripes (45 degrees downwards)
+    const double stripeSpacing = 15.0;
+    const double angle = -math.pi / -4;
 
-    // Save the canvas state before clipping
     canvas.save();
-    // Clip the stripes to the shape of the progress bar
     canvas.clipRRect(progressRRect);
 
-    // Draw diagonal stripes
-    // Iterate from left (before the bar starts) to right (after the bar ends)
     for (
-      double i =
-          -size.height; // Start drawing from a point off-screen to the left/top
-      i <
-          size.width +
-              size.height; // End drawing off-screen to the right/bottom
-      i +=
-          stripePaint.strokeWidth +
-          stripeSpacing // Increment by stripe width + spacing
+      double i = -size.height;
+      i < size.width + size.height;
+      i += stripePaint.strokeWidth + stripeSpacing
     ) {
-      // Calculate start and end points for each stripe
-      // The x-coordinates are offset by 'i' to create the diagonal pattern
       canvas.drawLine(
         Offset(i + progressRect.left, progressRect.top),
         Offset(
@@ -134,13 +115,11 @@ class StrippedProgressPainter extends CustomPainter {
         stripePaint,
       );
     }
-    // Restore the canvas to its state before clipping
     canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant StrippedProgressPainter old) {
-    // Repaint only if the progress value changes
     return old.progress != progress;
   }
 }
@@ -151,7 +130,7 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
   final int? maxPoints;
   final double height;
   final double milestoneRadius;
-  final double leftMargin; // Yeni parametre
+  final double leftMargin;
 
   const RewardProgressBarWithMilestones({
     super.key,
@@ -160,7 +139,7 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
     this.maxPoints,
     this.height = 30,
     this.milestoneRadius = 15,
-    this.leftMargin = 0, // Varsayılan 0
+    this.leftMargin = 0,
   });
 
   @override
@@ -171,7 +150,6 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Progress bar genişliği sol margini çıkararak hesaplanır
         final double barWidth = constraints.maxWidth - leftMargin;
         final double progress = (currentPoints / calculatedMaxPoints).clamp(
           0.0,
@@ -184,7 +162,6 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // Ana progress bar - sağa kaydırılmış
               Positioned(
                 left: leftMargin,
                 top: 0,
@@ -201,7 +178,6 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
                 ),
               ),
 
-              // Milestone'ları sağa kaydırılmış alanda konumlandır
               ...milestones.map((milestone) {
                 final double leftPercent = milestone / calculatedMaxPoints;
                 double leftPos =
