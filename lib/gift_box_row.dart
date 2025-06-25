@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gacha/gray_scale_filter.dart';
 
 class GiftBoxRow extends StatelessWidget {
   final List<int> milestones;
@@ -72,6 +73,7 @@ class GiftBoxRow extends StatelessWidget {
               ),
 
               ...milestones.map((milestone) {
+                final milestoneReached = currentPoints >= milestone;
                 final double calculatedMaxPoints = (milestones.last + 20)
                     .toDouble();
                 final factor = milestone / calculatedMaxPoints;
@@ -82,15 +84,38 @@ class GiftBoxRow extends StatelessWidget {
                       progressWidth - circleRadius,
                     );
                 return Positioned(
-                  left: centerX - 53,
+                  left: centerX - 52,
                   top: 0,
-                  child: Card(
-                    color: currentPoints >= milestone
-                        ? Colors.grey
-                        : Colors.yellowAccent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        radius: 0.5,
+                        colors: milestoneReached
+                            ? [Colors.white, Colors.grey]
+                            : [Colors.white, Colors.orange],
+                      ),
+
+                      borderRadius: BorderRadius.circular(5),
+                      shape: BoxShape.rectangle,
+                      color: milestoneReached
+                          ? Colors.grey
+                          : Colors.yellowAccent,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+
                     child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Icon(Icons.card_giftcard, color: Colors.grey[800]),
+                      padding: const EdgeInsets.all(5),
+                      child: ColorFiltered(
+                        colorFilter: milestoneReached
+                            ? grayscaleFilter()
+                            : noFilter(),
+                        child: Image.asset(
+                          'assets/chest.png',
+                          fit: BoxFit.cover,
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
                     ),
                   ),
                 );

@@ -92,10 +92,11 @@ class MainGridContainer extends StatelessWidget {
                 width: centerBoxSize,
                 height: centerBoxSize,
                 child: Center(
-                  child: Icon(
-                    Icons.card_giftcard,
-                    size: centerBoxSize * 0.6,
-                    color: Colors.white70,
+                  child: Image.asset(
+                    'assets/gift.png',
+                    fit: BoxFit.cover,
+                    width: centerBoxSize / 2,
+                    height: centerBoxSize / 2,
                   ),
                 ),
               ),
@@ -200,7 +201,11 @@ class GlowContainer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: baseColor, // Her kutunun kendi sabit rengi
+        gradient: RadialGradient(
+          colors: [Colors.white, baseColor],
+          radius: 0.5,
+        ),
+        color: baseColor,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: borderColor, width: 3),
         boxShadow: [

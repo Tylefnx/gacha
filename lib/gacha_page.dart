@@ -13,7 +13,7 @@ class GachaPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Tasarım Odaklı Grid'),
+        title: const Text('Şanslı Çekiliş'),
         backgroundColor: const Color(0xFF330066),
         foregroundColor: Colors.white,
       ),
