@@ -87,7 +87,7 @@ class StrippedProgressPainter extends CustomPainter {
     canvas.drawRRect(progressRRect, progressPaint);
 
     final Color darkerAmber = Color.alphaBlend(
-      Colors.black.withOpacity(0.1),
+      Colors.black.withValues(alpha: 0.1),
       progressColor,
     );
 
@@ -215,7 +215,7 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
         border: Border.all(color: Colors.black87, width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             offset: Offset(0, 2),
             blurRadius: 4,
           ),

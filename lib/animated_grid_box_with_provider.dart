@@ -204,12 +204,9 @@ class GlowContainer extends StatelessWidget {
 }
 
 class GridContent extends StatelessWidget {
-  final GameItem gameItem; // GameItem nesnesini ekledik
+  final GameItem gameItem;
 
-  const GridContent({
-    required this.gameItem,
-    super.key,
-  }); // Constructor'ı güncelledik
+  const GridContent({required this.gameItem, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -218,17 +215,13 @@ class GridContent extends StatelessWidget {
       children: [
         if (gameItem.image != null)
           Image.asset(
-            gameItem.image!, // GameItem'dan görseli kullandık
+            gameItem.image!,
             fit: BoxFit.contain,
             width: 50,
             height: 50,
           )
         else
-          Icon(
-            Icons.category,
-            size: 50,
-            color: Colors.white54,
-          ), // Eğer görsel yoksa varsayılan ikon
+          Icon(Icons.category, size: 50, color: Colors.white54),
       ],
     );
   }
@@ -254,13 +247,13 @@ class MainGridContainer extends StatelessWidget {
         border: Border.all(color: const Color(0xffAF97DC), width: 3),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
             spreadRadius: 5,
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
           BoxShadow(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             spreadRadius: 5,
             blurRadius: 15,
             inset: true,

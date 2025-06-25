@@ -63,7 +63,7 @@ class GiftBoxRow extends StatelessWidget {
                           text: ' / $maxPoints',
                           style: textStyle.copyWith(
                             fontSize: textStyle.fontSize! * 0.7,
-                            color: textStyle.color?.withOpacity(0.8),
+                            color: textStyle.color?.withValues(alpha: 0.8),
                           ),
                         ),
                       ],
