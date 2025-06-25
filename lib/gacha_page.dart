@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gacha/animated_grid_box_with_provider.dart';
 import 'package:gacha/grid_state_notifier.dart';
+import 'package:gacha/reward_progress_bar.dart';
 import 'package:provider/provider.dart';
 
 class GachaPage extends StatelessWidget {
@@ -15,7 +16,7 @@ class GachaPage extends StatelessWidget {
         backgroundColor: const Color(0xFF330066),
         foregroundColor: Colors.white,
       ),
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: const AssetImage('assets/background.png'),
@@ -29,34 +30,10 @@ class GachaPage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 16.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    spacing: 10,
-                    children: [
-                      Icon(Icons.question_mark_rounded, color: Colors.white),
-                      Text(
-                        'Şanslı Çekiliş',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ColoredBox(
-                    color: Colors.white,
-                    child: SizedBox(width: 100, height: 10),
-                  ),
-                ],
-              ),
+            GachaHud(),
+            MilestoneProgressBar(
+              currentPoints: 40,
+              milestones: [40, 80, 120, 160],
             ),
             AnimatedGridBoxWithProvider(),
           ],
@@ -73,6 +50,40 @@ class GachaPage extends StatelessWidget {
         backgroundColor: const Color(0xFF6A0DAD),
         foregroundColor: Colors.white,
         child: const Icon(Icons.shuffle),
+      ),
+    );
+  }
+}
+
+class GachaHud extends StatelessWidget {
+  const GachaHud({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            spacing: 10,
+            children: [
+              Icon(Icons.question_mark_rounded, color: Colors.white),
+              Text(
+                'Şanslı Çekiliş',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          ColoredBox(
+            color: Colors.white,
+            child: SizedBox(width: 100, height: 10),
+          ),
+        ],
       ),
     );
   }
