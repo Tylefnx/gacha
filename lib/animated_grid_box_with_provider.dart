@@ -50,7 +50,6 @@ class MainGridContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFF330066),
         borderRadius: BorderRadius.circular(36),
@@ -217,30 +216,6 @@ class GridContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gridState = Provider.of<GridStateNotifier>(context);
-
-    return Center(
-      child: Image.network(
-        gridState.getBoxImageUrl(index),
-        fit: BoxFit.contain,
-        width: 70,
-        height: 70,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                  : null,
-              strokeWidth: 2,
-              color: Colors.white70,
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.broken_image, color: Colors.white54, size: 40),
-      ),
-    );
+    return Center(child: Icon(Icons.abc));
   }
 }

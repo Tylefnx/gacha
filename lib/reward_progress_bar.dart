@@ -1,66 +1,73 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 class StrippedProgressPainter extends CustomPainter {
-  final double progress; // 0.0 - 1.0 arası ilerleme oranı
+  final double progress;
   final Color progressColor;
   final Color backgroundColor;
   final Color borderColor;
   final double borderWidth;
   final double cornerRadius;
-  final double innerPadding; // Kenarlık ile iç kısım arasındaki boşluk
+  final double innerPadding;
 
   StrippedProgressPainter({
     required this.progress,
-    this.progressColor = Colors.amber, // Ana ilerleme rengi sarı
-    this.backgroundColor = const Color(0xFF263238), // Koyu arka plan rengi
-    this.borderColor = const Color(0xFF37474F), // Dış çerçevenin koyu kenarlığı
+    this.progressColor = Colors.amber,
+    this.backgroundColor = const Color(0xFF263238),
+    this.borderColor = const Color(0xFF37474F),
     this.borderWidth = 3.0,
     this.cornerRadius = 15.0,
-    this.innerPadding = 2.0, // İçteki boşluk (resimdeki gibi)
+    this.innerPadding = 2.0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Ensure cornerRadius is not too large for the given size
+    final double adjustedCornerRadius = math.min(cornerRadius, size.height / 2);
+
     final RRect outerRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(cornerRadius),
+      Radius.circular(adjustedCornerRadius),
     );
 
-    // 1. Dış Çerçeve Arka Planı (Açık Kahverengi/Bej)
     final Paint outerBackgroundPaint = Paint()
       ..color =
-          const Color(0xFFDCC8A0) // Açık kahverengi/bej
+          const Color(0xFFDCC8A0) // Outer background color
       ..style = PaintingStyle.fill;
     canvas.drawRRect(outerRect, outerBackgroundPaint);
 
-    // 2. Dış Çerçeve Kenarlığı (Koyu Renk)
     final Paint outerBorderPaint = Paint()
-      ..color =
-          borderColor // Koyu renkli kenarlık
+      ..color = borderColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth;
     canvas.drawRRect(outerRect, outerBorderPaint);
 
-    // 3. İç İlerleme Alanı (Arka Plan - Koyu Gri/Siyah)
+    // Calculate inner rectangle dimensions
     final Rect innerRect = Rect.fromLTWH(
       borderWidth + innerPadding,
       borderWidth + innerPadding,
       size.width - (borderWidth + innerPadding) * 2,
       size.height - (borderWidth + innerPadding) * 2,
     );
+
+    // Ensure inner corner radius is valid
+    final double innerCornerRadius = math.max(
+      0.0,
+      adjustedCornerRadius - borderWidth - innerPadding,
+    );
+
     final RRect innerRRect = RRect.fromRectAndRadius(
       innerRect,
-      Radius.circular(
-        cornerRadius - borderWidth - innerPadding,
-      ), // İç köşeyi dışa göre ayarla
+      Radius.circular(innerCornerRadius),
     );
+
     final Paint innerBackgroundPaint = Paint()
       ..color = backgroundColor
       ..style = PaintingStyle.fill;
     canvas.drawRRect(innerRRect, innerBackgroundPaint);
 
-    // 4. İlerleyen Kısım (Sarı ve Çizgili)
+    // Calculate the width of the progress fill
     final double currentWidth = innerRect.width * progress;
     final Rect progressRect = Rect.fromLTWH(
       innerRect.left,
@@ -68,164 +75,150 @@ class StrippedProgressPainter extends CustomPainter {
       currentWidth,
       innerRect.height,
     );
-    // Sol tarafı oval, sağ tarafı düz (ilerlemeye göre değişir)
+
+    // Determine the corner radii for the progress bar, only rounding the right side if full
     final RRect progressRRect = RRect.fromRectAndCorners(
       progressRect,
-      topLeft: Radius.circular(cornerRadius - borderWidth - innerPadding),
-      bottomLeft: Radius.circular(cornerRadius - borderWidth - innerPadding),
-      topRight:
-          (currentWidth >=
-              innerRect.width - (cornerRadius - borderWidth - innerPadding))
-          ? Radius.circular(cornerRadius - borderWidth - innerPadding)
+      topLeft: Radius.circular(innerCornerRadius),
+      bottomLeft: Radius.circular(innerCornerRadius),
+      topRight: currentWidth >= innerRect.width - innerCornerRadius
+          ? Radius.circular(innerCornerRadius)
           : Radius.zero,
-      bottomRight:
-          (currentWidth >=
-              innerRect.width - (cornerRadius - borderWidth - innerPadding))
-          ? Radius.circular(cornerRadius - borderWidth - innerPadding)
+      bottomRight: currentWidth >= innerRect.width - innerCornerRadius
+          ? Radius.circular(innerCornerRadius)
           : Radius.zero,
     );
 
-    final Paint progressPaint = Paint()..color = progressColor; // Ana sarı
+    final Paint progressPaint = Paint()..color = progressColor;
     canvas.drawRRect(progressRRect, progressPaint);
 
-    // Çizgili deseni çizelim
-    const double stripeWidth = 5.0; // Çizgi kalınlığı
-    const double stripeSpacing = 5.0; // Çizgiler arası boşluk
-    final double angle = -math.pi / 4; // -45 derece eğim (yönü ters çevirir)
-
-    canvas.save();
-    canvas.clipRRect(progressRRect); // İlerleme alanının dışına taşmasın
-
-    // Çizgi rengini, ana sarıdan biraz daha koyu veya daha az doygun bir sarı tonu olarak belirleyelim.
-    // Örnek olarak, Colors.amber'ın biraz daha koyu bir tonunu veya Colors.orange[200] gibi bir şeyi deneyebiliriz.
-    // Veya Colors.yellow.withOpacity(0.7) gibi daha sarı ama farklı bir opaklık.
-    final Paint stripePaint = Paint()
-      ..color = progressColor
-          .withOpacity(0.7)
-          .withRed(
-            (progressColor.red * 0.9).toInt(),
-          ) // Sarıdan biraz daha koyu ve daha az şeffaf
-      // Diğer bir deneme: progressColor'ın HSL değerlerini değiştirerek daha az doygun yapmak
-      // HSLColor.fromColor(progressColor).withLightness(HSLColor.fromColor(progressColor).lightness * 0.8).toColor()
-      ..strokeWidth = stripeWidth;
-
-    // Ya da doğrudan bir renk kodu deneyelim:
-    // final Paint stripePaint = Paint()..color = const Color(0xFFD4AF37).withOpacity(0.7); // Altın sarısı gibi bir ton
-
-    // Ya da Colors.yellowAccent.withOpacity(0.5) gibi sarı tonu ama şeffaf.
-    // Resimdeki "gölge" etkisini vermek için Colors.black.withOpacity(0.1) gibi siyah çizgiler de denenebilir.
-    // Şu anki görseldeki gibi "sarının üzerinde daha koyu sarı" etkisi için:
+    // Calculate a darker shade of the progress color for stripes
     final Color darkerAmber = Color.alphaBlend(
       Colors.black.withOpacity(0.15),
       progressColor,
-    ); // Sarı üzerine hafif siyah bindirme
-    final Paint finalStripePaint = Paint()
-      ..color =
-          darkerAmber // Bu renk, ana sarının üzerine hafif siyah ekleyerek oluştu
-      ..strokeWidth = stripeWidth;
+    );
 
-    // Çizgileri çiz
+    final Paint stripePaint = Paint()
+      ..color = darkerAmber
+      ..strokeWidth = 5.0; // Stripe thickness
+
+    const double stripeSpacing = 5.0; // Space between stripes
+    const double angle =
+        -math.pi / 4; // Angle of the stripes (45 degrees downwards)
+
+    // Save the canvas state before clipping
+    canvas.save();
+    // Clip the stripes to the shape of the progress bar
+    canvas.clipRRect(progressRRect);
+
+    // Draw diagonal stripes
+    // Iterate from left (before the bar starts) to right (after the bar ends)
     for (
-      double i = -size.height;
-      i < size.width + size.height;
-      i += stripeWidth + stripeSpacing
+      double i =
+          -size.height; // Start drawing from a point off-screen to the left/top
+      i <
+          size.width +
+              size.height; // End drawing off-screen to the right/bottom
+      i +=
+          stripePaint.strokeWidth +
+          stripeSpacing // Increment by stripe width + spacing
     ) {
+      // Calculate start and end points for each stripe
+      // The x-coordinates are offset by 'i' to create the diagonal pattern
       canvas.drawLine(
         Offset(i + progressRect.left, progressRect.top),
         Offset(
           i + progressRect.left + progressRect.height / math.tan(-angle),
           progressRect.bottom,
         ),
-        finalStripePaint, // Final stripe paint kullanıldı
+        stripePaint,
       );
     }
+    // Restore the canvas to its state before clipping
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant StrippedProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress ||
-        oldDelegate.progressColor != progressColor ||
-        oldDelegate.backgroundColor != backgroundColor ||
-        oldDelegate.borderColor != borderColor ||
-        oldDelegate.borderWidth != borderWidth ||
-        oldDelegate.cornerRadius != cornerRadius ||
-        oldDelegate.innerPadding != innerPadding;
+  bool shouldRepaint(covariant StrippedProgressPainter old) {
+    // Repaint only if the progress value changes
+    return old.progress != progress;
   }
 }
 
-// MilestoneProgressBar ve main fonksiyonları aynı kalabilir.
-// (Önceki mesajdaki kodlar burada tekrar verilmedi, ancak aynı şekilde kullanılabilir.)
-
-// MilestoneProgressBar ve main fonksiyonları aynı kalabilir.
-// (Önceki mesajdaki kodlar burada tekrar verilmedi, ancak aynı şekilde kullanılabilir.)
-
-// MilestoneProgressBar ve main fonksiyonları aynı kalabilir, sadece StrippedProgressPainter'ı kullanacaklar.
-// Eğer MilestoneProgressBar veya main fonksiyonunda da değişiklik yapmamı isterseniz lütfen belirtin.
-
-// Önceki MilestoneProgressBar ve main fonksiyonları aşağıdadır, değişiklik yapmadım:
-class MilestoneProgressBar extends StatelessWidget {
+class RewardProgressBarWithMilestones extends StatelessWidget {
   final int currentPoints;
-  final List<int> milestones; // Örneğin: [40, 80, 120, 160]
-  final double height; // Çubuğun yüksekliği
-  final double milestoneCircleRadius; // Milestone dairelerinin yarıçapı
+  final List<int> milestones;
+  final int? maxPoints;
+  final double height;
+  final double milestoneRadius;
+  final double leftMargin; // Yeni parametre
 
-  const MilestoneProgressBar({
+  const RewardProgressBarWithMilestones({
     super.key,
     required this.currentPoints,
     required this.milestones,
-    this.height = 30.0, // Resimdeki çubuk daha yüksek görünüyor
-    this.milestoneCircleRadius = 15.0, // Resimdeki boyutlara göre ayarlandı
+    this.maxPoints,
+    this.height = 30,
+    this.milestoneRadius = 15,
+    this.leftMargin = 0, // Varsayılan 0
   });
 
   @override
   Widget build(BuildContext context) {
-    // Toplam maksimum puan (son milestone'a kadar)
-    final int maxMilestone = milestones.last;
-    // İlerleme oranı (0.0 ile 1.0 arasında)
-    final double progress = (currentPoints / maxMilestone).clamp(0.0, 1.0);
+    final int calculatedMaxPoints =
+        maxPoints ??
+        (milestones.isNotEmpty ? (milestones.last * 1.25).round() : 1);
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double progressBarWidth = constraints.maxWidth;
+        // Progress bar genişliği sol margini çıkararak hesaplanır
+        final double barWidth = constraints.maxWidth - leftMargin;
+        final double progress = (currentPoints / calculatedMaxPoints).clamp(
+          0.0,
+          1.0,
+        );
 
         return SizedBox(
-          // Kapsayıcıya dış kenarlık ekleyebiliriz veya painter içinde bırakabiliriz.
-          // Bu tasarımda painter içinde olması daha iyi.
-          height:
-              height, // Çubuk yüksekliği + milestone'ların çubuktan çıkan kısmı için biraz daha fazla.
+          height: height,
+          width: constraints.maxWidth,
           child: Stack(
-            alignment: Alignment.centerLeft, // Stack içeriğini sola hizala
+            clipBehavior: Clip.none,
             children: [
-              // CustomPaint ile ilerleme çubuğunu çiz
-              CustomPaint(
-                size: Size(progressBarWidth, height), // Painter'ın çizim alanı
-                painter: StrippedProgressPainter(
-                  progress: progress,
-                  cornerRadius:
-                      height /
-                      2, // Çubuğun yüksekliğinin yarısı kadar köşe (tam oval için)
-                  // Diğer renkler ve kalınlıklar StrippedProgressPainter'da tanımlı
+              // Ana progress bar - sağa kaydırılmış
+              Positioned(
+                left: leftMargin,
+                top: 0,
+                bottom: 0,
+                child: SizedBox(
+                  width: barWidth,
+                  height: height,
+                  child: CustomPaint(
+                    painter: StrippedProgressPainter(
+                      progress: progress,
+                      cornerRadius: height / 2,
+                    ),
+                  ),
                 ),
               ),
 
-              // Milestone noktaları
+              // Milestone'ları sağa kaydırılmış alanda konumlandır
               ...milestones.map((milestone) {
-                // Milestone'ın çubuk üzerindeki konumunu hesapla
-                // Her milestone, toplam çubuk genişliğinin kendi milestone değerinin maxMilestone'a oranına göre konumlanır.
-                // Yarıçapı ve kenarlık payı ekleyerek merkezleme yapılır.
-                final double positionFactor = milestone / maxMilestone;
-                final double leftPosition =
-                    progressBarWidth * positionFactor - milestoneCircleRadius;
+                final double leftPercent = milestone / calculatedMaxPoints;
+                double leftPos =
+                    leftMargin + (leftPercent * barWidth) - milestoneRadius;
+
+                final double clampedLeftPos = leftPos.clamp(
+                  leftMargin,
+                  leftMargin + barWidth - milestoneRadius * 2,
+                );
 
                 return Positioned(
-                  left: leftPosition,
-                  // Merkezleme için (height / 2) - milestoneCircleRadius
-                  // Dairenin çubuktan biraz dışarı çıkmasını istiyorsak, ona göre ayarlanır.
-                  top: (height / 2) - milestoneCircleRadius,
+                  left: clampedLeftPos,
+                  top: (height / 2) - milestoneRadius,
                   child: _buildMilestoneCircle(
                     milestone,
                     currentPoints >= milestone,
+                    milestoneRadius,
                   ),
                 );
               }),
@@ -236,46 +229,31 @@ class MilestoneProgressBar extends StatelessWidget {
     );
   }
 
-  // Milestone çemberi widget'ı
-  Widget _buildMilestoneCircle(int milestone, bool isReached) {
+  Widget _buildMilestoneCircle(int milestone, bool reached, double radius) {
     return Container(
-      width: milestoneCircleRadius * 2,
-      height: milestoneCircleRadius * 2,
+      width: radius * 2,
+      height: radius * 2,
       decoration: BoxDecoration(
-        color: Colors.amber, // Her zaman sarı
+        color: reached ? Colors.amber : Colors.grey.shade700,
         shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          milestone.toString(),
-          style: const TextStyle(
-            color: Colors.white, // Beyaz rakamlar
-            fontWeight: FontWeight.bold,
-            fontSize: 18, // Boyutu ayarla
-            shadows: [
-              Shadow(
-                // Metne siyah dış çizgi (stroke) efekti vermek için
-                blurRadius: 2.0,
-                color: Colors.black,
-                offset: Offset(1.0, 1.0),
-              ),
-              Shadow(
-                blurRadius: 2.0,
-                color: Colors.black,
-                offset: Offset(-1.0, -1.0),
-              ),
-              Shadow(
-                blurRadius: 2.0,
-                color: Colors.black,
-                offset: Offset(1.0, -1.0),
-              ),
-              Shadow(
-                blurRadius: 2.0,
-                color: Colors.black,
-                offset: Offset(-1.0, 1.0),
-              ),
-            ],
+        border: Border.all(color: Colors.black87, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            offset: Offset(0, 2),
+            blurRadius: 4,
           ),
+        ],
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        milestone.toString(),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          shadows: [
+            Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),
+          ],
         ),
       ),
     );

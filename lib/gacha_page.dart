@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gacha/animated_grid_box_with_provider.dart';
+import 'package:gacha/gift_box_row.dart';
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:gacha/reward_progress_bar.dart';
 import 'package:provider/provider.dart';
@@ -28,15 +29,24 @@ class GachaPage extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Column(
-          children: [
-            GachaHud(),
-            MilestoneProgressBar(
-              currentPoints: 40,
-              milestones: [40, 80, 120, 160],
-            ),
-            AnimatedGridBoxWithProvider(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            spacing: 5,
+            children: [
+              GachaHud(),
+              GiftBoxRow(
+                milestones: [40, 80, 120, 160],
+                currentPoints: 44,
+                maxPoints: 75,
+              ),
+              RewardProgressBarWithMilestones(
+                currentPoints: 45,
+                milestones: [40, 80, 120, 160],
+              ),
+              AnimatedGridBoxWithProvider(),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,31 +70,32 @@ class GachaHud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            spacing: 10,
-            children: [
-              Icon(Icons.question_mark_rounded, color: Colors.white),
-              Text(
-                'Şanslı Çekiliş',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          spacing: 10,
+          children: [
+            CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.white,
+              child: Icon(Icons.question_mark, color: Colors.black),
+            ),
+            Text(
+              'Şanslı Çekiliş',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
-            ],
-          ),
-          ColoredBox(
-            color: Colors.white,
-            child: SizedBox(width: 100, height: 10),
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+        ColoredBox(
+          color: Colors.white,
+          child: SizedBox(width: 100, height: 10),
+        ),
+      ],
     );
   }
 }
