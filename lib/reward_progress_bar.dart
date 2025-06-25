@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 class StrippedProgressPainter extends CustomPainter {
@@ -15,8 +14,8 @@ class StrippedProgressPainter extends CustomPainter {
     required this.progress,
     this.progressColor = Colors.amber,
     this.backgroundColor = const Color(0xFF263238),
-    this.borderColor = const Color(0xFF37474F),
-    this.borderWidth = 3.0,
+    this.borderColor = Colors.yellow,
+    this.borderWidth = 1.0,
     this.cornerRadius = 15.0,
     this.innerPadding = 2.0,
   });
