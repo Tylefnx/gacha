@@ -49,17 +49,35 @@ class GachaPage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Provider.of<GridStateNotifier>(
-            context,
-            listen: false,
-          ).startSpinningAndSelect();
-        },
-        tooltip: 'Rastgele kutu seç ve canlandır',
-        backgroundColor: const Color(0xFF6A0DAD),
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.shuffle),
+      floatingActionButton: Row(
+        spacing: 50,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Provider.of<GridStateNotifier>(
+                context,
+                listen: false,
+              ).startSpinningAndSelect();
+            },
+            tooltip: 'Rastgele kutu seç ve canlandır',
+            backgroundColor: const Color(0xFF6A0DAD),
+            foregroundColor: Colors.white,
+            child: const Icon(Icons.shuffle),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              Provider.of<GridStateNotifier>(
+                context,
+                listen: false,
+              ).spinMultipleTimes(10);
+            },
+            tooltip: 'Rastgele kutu seç ve canlandır',
+            backgroundColor: const Color(0xFF6A0DAD),
+            foregroundColor: Colors.white,
+            child: const Icon(Icons.access_time),
+          ),
+        ],
       ),
     );
   }

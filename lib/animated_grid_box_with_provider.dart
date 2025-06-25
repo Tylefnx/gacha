@@ -138,10 +138,7 @@ class _GridItemState extends State<GridItem>
     super.dispose();
   }
 
-  Color _getGlowColor(int index, bool isHighlighted, bool isAnimated) {
-    if (isHighlighted) return Colors.yellow;
-    if (isAnimated) return Colors.greenAccent;
-
+  Color _getBaseColor(int index) {
     if ([0, 1, 5, 9].contains(index)) {
       return const Color(0xFF3366CC);
     } else if ([4, 8, 12, 13].contains(index)) {
@@ -149,6 +146,11 @@ class _GridItemState extends State<GridItem>
     } else {
       return const Color(0xFFFF8C00);
     }
+  }
+
+  Color _getBorderColor(bool isHighlighted, bool isAnimated) {
+    if (isHighlighted || isAnimated) return Colors.yellow;
+    return Colors.transparent;
   }
 
   @override
@@ -159,12 +161,14 @@ class _GridItemState extends State<GridItem>
 
     if ([5, 6, 9, 10].contains(widget.index)) return const SizedBox.shrink();
 
-    final glowColor = _getGlowColor(widget.index, isHighlighted, isAnimated);
+    final baseColor = _getBaseColor(widget.index);
+    final borderColor = _getBorderColor(isHighlighted, isAnimated);
 
     return ScaleTransition(
       scale: _scaleAnimation,
       child: GlowContainer(
-        color: glowColor,
+        baseColor: baseColor,
+        borderColor: borderColor,
         child: GridContent(index: widget.index),
       ),
     );
@@ -172,39 +176,34 @@ class _GridItemState extends State<GridItem>
 }
 
 class GlowContainer extends StatelessWidget {
-  final Color color;
+  final Color borderColor;
+  final Color baseColor;
   final Widget child;
 
-  const GlowContainer({required this.color, required this.child, super.key});
+  const GlowContainer({
+    required this.borderColor,
+    required this.baseColor,
+    required this.child,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      padding: const EdgeInsets.all(3),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.6), color.withOpacity(0.3)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        color: baseColor, // Her kutunun kendi sabit rengi
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderColor, width: 3),
+        boxShadow: [
+          BoxShadow(
+            color: borderColor.withOpacity(0.7),
+            blurRadius: 10,
+            spreadRadius: 1,
           ),
-          borderRadius: BorderRadius.circular(5),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.5),
-              blurRadius: 12,
-              spreadRadius: -4,
-              offset: Offset.zero,
-            ),
-          ],
-        ),
-        child: child,
+        ],
       ),
+      child: child,
     );
   }
 }

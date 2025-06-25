@@ -20,7 +20,7 @@ class GridStateNotifier extends ChangeNotifier {
   String getBoxImageUrl(int index) => _boxImageUrls[index];
 
   // Kullanılabilir indeksler (merkezdekiler hariç)
-  List<int> _availableIndices = [];
+  final List<int> _availableIndices = [];
 
   GridStateNotifier() {
     _initAvailableIndices();
@@ -60,6 +60,13 @@ class GridStateNotifier extends ChangeNotifier {
         _availableIndices[random.nextInt(_availableIndices.length)];
     _highlightedBoxIndex = null; // Turlama vurgusunu kaldır
     notifyListeners(); // Nihai seçimi ve turlamanın bittiğini bildir
+  }
+
+  Future<void> spinMultipleTimes(int times) async {
+    for (int i = 0; i < times; i++) {
+      await startSpinningAndSelect();
+      await Future.delayed(const Duration(seconds: 1));
+    }
   }
 
   // Animasyonu sıfırlamak için

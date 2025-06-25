@@ -55,7 +55,23 @@ class GiftBoxRow extends StatelessWidget {
                 top: 0,
                 child: Transform.translate(
                   offset: Offset(0, verticalOffset),
-                  child: Text('$currentPoints / $maxPoints', style: textStyle),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: '$currentPoints', style: textStyle),
+                        TextSpan(
+                          text: ' / $maxPoints',
+                          style: textStyle.copyWith(
+                            fontSize:
+                                textStyle.fontSize! * 0.7, // %70'ine indir
+                            color: textStyle.color?.withOpacity(
+                              0.8,
+                            ), // Hafif silikleştir istersen
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
 
@@ -75,16 +91,11 @@ class GiftBoxRow extends StatelessWidget {
                   top: 0,
                   child: Card(
                     color: currentPoints >= milestone
-                        ? Colors.green
-                        : Colors.grey,
+                        ? Colors.grey
+                        : Colors.yellowAccent,
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Icon(
-                        Icons.card_giftcard,
-                        color: currentPoints >= milestone
-                            ? Colors.white
-                            : Colors.grey.shade400,
-                      ),
+                      child: Icon(Icons.card_giftcard, color: Colors.grey[800]),
                     ),
                   ),
                 );

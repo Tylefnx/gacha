@@ -94,17 +94,17 @@ class StrippedProgressPainter extends CustomPainter {
 
     // Calculate a darker shade of the progress color for stripes
     final Color darkerAmber = Color.alphaBlend(
-      Colors.black.withOpacity(0.15),
+      Colors.black.withOpacity(0.1),
       progressColor,
     );
 
     final Paint stripePaint = Paint()
       ..color = darkerAmber
-      ..strokeWidth = 5.0; // Stripe thickness
+      ..strokeWidth = 7.5; // Stripe thickness
 
-    const double stripeSpacing = 5.0; // Space between stripes
+    const double stripeSpacing = 15.0; // Space between stripes
     const double angle =
-        -math.pi / 4; // Angle of the stripes (45 degrees downwards)
+        -math.pi / -4; // Angle of the stripes (45 degrees downwards)
 
     // Save the canvas state before clipping
     canvas.save();
@@ -251,6 +251,7 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
+          fontSize: 12,
           shadows: [
             Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),
           ],
