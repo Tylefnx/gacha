@@ -51,7 +51,7 @@ List<GameItem> getMockGameItems() {
   GameItem item1 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFF3366CC,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -65,7 +65,7 @@ List<GameItem> getMockGameItems() {
   GameItem item2 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFF3366CC,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -79,7 +79,7 @@ List<GameItem> getMockGameItems() {
   GameItem item3 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFFFF8C00,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -93,7 +93,7 @@ List<GameItem> getMockGameItems() {
   GameItem item4 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFFFF8C00,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -108,7 +108,7 @@ List<GameItem> getMockGameItems() {
   GameItem item5 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFFFF8C00,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -122,7 +122,7 @@ List<GameItem> getMockGameItems() {
   GameItem item6 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFF3366CC,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -136,7 +136,7 @@ List<GameItem> getMockGameItems() {
   GameItem item7 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFF45B52F,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -150,7 +150,7 @@ List<GameItem> getMockGameItems() {
   GameItem item8 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFF3366CC,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -165,7 +165,7 @@ List<GameItem> getMockGameItems() {
   GameItem item9 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFFFF8C00,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -180,7 +180,7 @@ List<GameItem> getMockGameItems() {
   GameItem item10 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFF3366CC,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',
@@ -208,7 +208,7 @@ List<GameItem> getMockGameItems() {
   GameItem item12 = GameItem(
     id: '1',
     quantity: 10,
-    bgColor: 0xFF6A0DAD,
+    bgColor: 0xFFFF8C00,
     header: 'Epic Item',
     bottom: 'Epic',
     name: 'Card',

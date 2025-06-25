@@ -12,7 +12,7 @@ class GridStateNotifier extends ChangeNotifier {
 
   // Kullanılabilir indeksler (merkezdekiler hariç)
   final List<int> _availableIndices = [];
-
+  List<int> get availableIndices => _availableIndices;
   GridStateNotifier() {
     _initAvailableIndices();
   }

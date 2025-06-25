@@ -4,12 +4,16 @@ import 'package:gacha/gift_box_row.dart';
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:gacha/reward_progress_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:gacha/game_item.dart'; // GameItem ve getMockGameItems'ı kullanmak için dahil ettik
 
 class GachaPage extends StatelessWidget {
   const GachaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Mock oyun öğelerini burada al
+    final List<GameItem> mockItems = getMockGameItems(); // Mock öğeleri aldık
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -44,7 +48,9 @@ class GachaPage extends StatelessWidget {
                 currentPoints: 44,
                 milestones: [40, 80, 120, 160],
               ),
-              AnimatedGridBoxWithProvider(),
+              AnimatedGridBoxWithProvider(
+                gameItems: mockItems,
+              ), // mockItems'ı buraya ilettik
             ],
           ),
         ),

@@ -11,6 +11,7 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   flutter_inset_shadow: ^2.0.3
+  gradient_borders: ^1.0.1
   provider: ^6.1.5
 
 dev_dependencies:
