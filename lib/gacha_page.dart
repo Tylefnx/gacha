@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gacha/animated_grid_box_with_provider.dart';
+import 'package:gacha/app_colors.dart';
 import 'package:gacha/gift_box_row.dart';
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:gacha/reward_progress_bar.dart';
@@ -28,7 +29,7 @@ class GachaPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           gradient: const LinearGradient(
-            colors: [Color(0xFF330066), Color(0xFF6A0DAD)],
+            colors: [AppColors.darkPurple, AppColors.purple],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -60,13 +61,13 @@ class GachaPage extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: spin(context),
-            backgroundColor: const Color(0xFF6A0DAD),
+            backgroundColor: AppColors.purple,
             foregroundColor: Colors.white,
             child: const Icon(Icons.shuffle),
           ),
           FloatingActionButton(
             onPressed: spinTenTimes(context),
-            backgroundColor: const Color(0xFF6A0DAD),
+            backgroundColor: AppColors.purple,
             foregroundColor: Colors.white,
             child: const Icon(Icons.access_time),
           ),

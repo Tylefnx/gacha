@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:gacha/app_colors.dart';
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
@@ -124,7 +125,7 @@ class _GridItemState extends State<GridItem>
   }
 
   Color _getBorderColor(bool isHighlighted, bool isAnimated) {
-    if (isHighlighted || isAnimated) return Colors.yellow;
+    if (isHighlighted || isAnimated) return AppColors.yellow;
     return Colors.transparent;
   }
 
@@ -186,13 +187,13 @@ class GlowContainer extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFFFBC521), Color(0xFFEA6900)],
+                  colors: [AppColors.darkYellow, AppColors.darkerOrange],
                 ),
               )
             : Border.all(color: borderColor, width: 3),
         boxShadow: [
           BoxShadow(
-            color: borderColor.withOpacity(0.7),
+            color: borderColor.withValues(alpha: 0.7),
             blurRadius: 10,
             spreadRadius: 1,
           ),

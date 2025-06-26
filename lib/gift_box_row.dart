@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gacha/app_colors.dart';
 import 'package:gacha/gray_scale_filter.dart';
 
 class GiftBoxRow extends StatelessWidget {
@@ -100,14 +101,14 @@ class _ChestBoxWidget extends StatelessWidget {
             radius: 0.4,
             colors: milestoneReached
                 ? [Colors.white, Colors.grey]
-                : [Colors.white, Colors.orange],
+                : [AppColors.yellow, AppColors.darkOrange],
           ),
 
           borderRadius: BorderRadius.circular(5),
           shape: BoxShape.rectangle,
-          color: milestoneReached ? Colors.grey : Colors.yellowAccent,
+          color: milestoneReached ? Colors.grey : AppColors.yellow,
           border: Border.all(
-            color: milestoneReached ? Colors.white : Colors.yellowAccent,
+            color: milestoneReached ? Colors.white : AppColors.yellow,
             width: 2,
           ),
         ),

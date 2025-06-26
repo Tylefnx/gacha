@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gacha/app_colors.dart';
 import 'package:gacha/game_linear_bar.dart';
 
 class RewardProgressBarWithMilestones extends StatelessWidget {
@@ -103,7 +104,7 @@ class _BuildMilestoneCircle extends StatelessWidget {
       width: radius * 2,
       height: radius * 2,
       decoration: BoxDecoration(
-        color: reached ? Colors.amber : Colors.grey.shade700,
+        color: reached ? AppColors.darkYellow : Colors.grey.shade700,
         shape: BoxShape.circle,
         border: Border.all(color: Colors.black87, width: 2),
         boxShadow: [
