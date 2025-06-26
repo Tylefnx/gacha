@@ -11,7 +11,7 @@ class GachaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentPoints = 160;
+    final currentPoints = 40;
     final List<GameItem> mockItems = getMockGameItems(); // Mock öğeleri aldık
 
     return Scaffold(

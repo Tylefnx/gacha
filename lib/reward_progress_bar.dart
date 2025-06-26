@@ -6,7 +6,6 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
   final List<int> milestones;
   final double height;
   final double milestoneRadius;
-  final double leftMargin;
 
   const RewardProgressBarWithMilestones({
     super.key,
@@ -14,18 +13,16 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
     required this.milestones,
     this.height = 23,
     this.milestoneRadius = 15,
-    this.leftMargin = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    final double calculatedMaxPoints = milestones.last * 1.25;
-
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double barWidth = constraints.maxWidth - leftMargin;
-        final double progress = (currentPoints / (milestones.last * 1.25))
-            .clamp(0.0, 1.0);
+        final double barWidth = constraints.maxWidth;
+        final double offset = barWidth * 0.1;
+        final double progress =
+            (currentPoints / (milestones.last * 1.25)) + 0.1;
 
         return SizedBox(
           height: height,
@@ -34,7 +31,6 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Positioned(
-                left: leftMargin,
                 top: 0,
                 bottom: 0,
                 child: SizedBox(
@@ -49,17 +45,11 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
               ),
 
               ...milestones.map((milestone) {
-                final double leftPercent = milestone / calculatedMaxPoints;
-                double leftPos =
-                    leftMargin + (leftPercent * barWidth) - milestoneRadius;
-
-                final double clampedLeftPos = leftPos.clamp(
-                  leftMargin,
-                  leftMargin + barWidth - milestoneRadius * 2,
-                );
-
                 return Positioned(
-                  left: clampedLeftPos + milestoneRadius + 20,
+                  left:
+                      ((barWidth * (milestone / (milestones.last * 1.25))) -
+                          milestoneRadius) +
+                      offset,
                   top: (height / 2) - milestoneRadius,
                   child: _buildMilestoneCircle(
                     milestone,
