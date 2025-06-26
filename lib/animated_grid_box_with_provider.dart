@@ -176,7 +176,7 @@ class GlowContainer extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: RadialGradient(
           colors: [Colors.white, baseColor],
-          radius: 0.5,
+          radius: 0.4,
         ),
         color: baseColor,
         borderRadius: BorderRadius.circular(8),
@@ -186,7 +186,7 @@ class GlowContainer extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.yellow, Colors.deepOrange],
+                  colors: [Color(0xFFFBC521), Color(0xFFEA6900)],
                 ),
               )
             : Border.all(color: borderColor, width: 3),
@@ -240,58 +240,74 @@ class MainGridContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFF330066),
+        color: const Color(0xFF1D1C53),
         borderRadius: BorderRadius.circular(36),
-        border: Border.all(color: const Color(0xffAF97DC), width: 3),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.7),
-            spreadRadius: 5,
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.7),
-            spreadRadius: 5,
-            blurRadius: 15,
-            inset: true,
-            offset: const Offset(4, 4),
+            spreadRadius: 0,
+            blurRadius: 12.8,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFF200040),
-                borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1953).withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(36),
+          border: Border.all(color: const Color(0xffAF97DC), width: 4),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFFD3CAFF).withValues(alpha: 0.7),
+              spreadRadius: 0,
+              blurRadius: 12.8,
+              offset: const Offset(6, 6),
+              inset: true,
+            ),
+            BoxShadow(
+              color: Color(0xFF7D60FF).withValues(alpha: 0.7),
+              spreadRadius: 0,
+              blurRadius: 12.8,
+              inset: true,
+              offset: const Offset(-6, -6),
+            ),
+          ],
+        ),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF200040),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Center(child: child),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: centerBoxSize,
-                height: centerBoxSize,
-                child: Center(
-                  child: Image.asset(
-                    'assets/gift.png',
-                    fit: BoxFit.cover,
-                    width: centerBoxSize / 2,
-                    height: centerBoxSize / 2,
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Center(child: child),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: centerBoxSize,
+                  height: centerBoxSize,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/gift.png',
+                      fit: BoxFit.cover,
+                      width: centerBoxSize / 2,
+                      height: centerBoxSize / 2,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

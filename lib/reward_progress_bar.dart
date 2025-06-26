@@ -1,132 +1,9 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
-
-class StrippedProgressPainter extends CustomPainter {
-  final double progress;
-  final Color progressColor;
-  final Color backgroundColor;
-  final Color borderColor;
-  final double borderWidth;
-  final double cornerRadius;
-  final double innerPadding;
-
-  StrippedProgressPainter({
-    required this.progress,
-    this.progressColor = Colors.amber,
-    this.backgroundColor = const Color(0xFF263238),
-    this.borderColor = Colors.yellow,
-    this.borderWidth = 1.0,
-    this.cornerRadius = 15.0,
-    this.innerPadding = 2.0,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final double adjustedCornerRadius = math.min(cornerRadius, size.height / 2);
-
-    final RRect outerRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(adjustedCornerRadius),
-    );
-
-    final Paint outerBackgroundPaint = Paint()
-      ..color = const Color(0xFFDCC8A0)
-      ..style = PaintingStyle.fill;
-    canvas.drawRRect(outerRect, outerBackgroundPaint);
-
-    final Paint outerBorderPaint = Paint()
-      ..color = borderColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = borderWidth;
-    canvas.drawRRect(outerRect, outerBorderPaint);
-
-    final Rect innerRect = Rect.fromLTWH(
-      borderWidth + innerPadding,
-      borderWidth + innerPadding,
-      size.width - (borderWidth + innerPadding) * 2,
-      size.height - (borderWidth + innerPadding) * 2,
-    );
-
-    final double innerCornerRadius = math.max(
-      0.0,
-      adjustedCornerRadius - borderWidth - innerPadding,
-    );
-
-    final RRect innerRRect = RRect.fromRectAndRadius(
-      innerRect,
-      Radius.circular(innerCornerRadius),
-    );
-
-    final Paint innerBackgroundPaint = Paint()
-      ..color = backgroundColor
-      ..style = PaintingStyle.fill;
-    canvas.drawRRect(innerRRect, innerBackgroundPaint);
-
-    final double currentWidth = innerRect.width * progress;
-    final Rect progressRect = Rect.fromLTWH(
-      innerRect.left,
-      innerRect.top,
-      currentWidth,
-      innerRect.height,
-    );
-
-    final RRect progressRRect = RRect.fromRectAndCorners(
-      progressRect,
-      topLeft: Radius.circular(innerCornerRadius),
-      bottomLeft: Radius.circular(innerCornerRadius),
-      topRight: currentWidth >= innerRect.width - innerCornerRadius
-          ? Radius.circular(innerCornerRadius)
-          : Radius.zero,
-      bottomRight: currentWidth >= innerRect.width - innerCornerRadius
-          ? Radius.circular(innerCornerRadius)
-          : Radius.zero,
-    );
-
-    final Paint progressPaint = Paint()..color = progressColor;
-    canvas.drawRRect(progressRRect, progressPaint);
-
-    final Color darkerAmber = Color.alphaBlend(
-      Colors.black.withValues(alpha: 0.1),
-      progressColor,
-    );
-
-    final Paint stripePaint = Paint()
-      ..color = darkerAmber
-      ..strokeWidth = 7.5;
-
-    const double stripeSpacing = 15.0;
-    const double angle = -math.pi / -4;
-
-    canvas.save();
-    canvas.clipRRect(progressRRect);
-
-    for (
-      double i = -size.height;
-      i < size.width + size.height;
-      i += stripePaint.strokeWidth + stripeSpacing
-    ) {
-      canvas.drawLine(
-        Offset(i + progressRect.left, progressRect.top),
-        Offset(
-          i + progressRect.left + progressRect.height / math.tan(-angle),
-          progressRect.bottom,
-        ),
-        stripePaint,
-      );
-    }
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(covariant StrippedProgressPainter old) {
-    return old.progress != progress;
-  }
-}
+import 'package:gacha/game_linear_bar.dart';
 
 class RewardProgressBarWithMilestones extends StatelessWidget {
   final int currentPoints;
   final List<int> milestones;
-  final int? maxPoints;
   final double height;
   final double milestoneRadius;
   final double leftMargin;
@@ -135,25 +12,20 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
     super.key,
     required this.currentPoints,
     required this.milestones,
-    this.maxPoints,
-    this.height = 30,
+    this.height = 23,
     this.milestoneRadius = 15,
     this.leftMargin = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    final int calculatedMaxPoints =
-        maxPoints ??
-        (milestones.isNotEmpty ? (milestones.last * 1.25).round() : 1);
+    final double calculatedMaxPoints = milestones.last * 1.25;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final double barWidth = constraints.maxWidth - leftMargin;
-        final double progress = (currentPoints / calculatedMaxPoints).clamp(
-          0.0,
-          1.0,
-        );
+        final double progress = (currentPoints / (milestones.last * 1.25))
+            .clamp(0.0, 1.0);
 
         return SizedBox(
           height: height,
@@ -168,11 +40,10 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
                 child: SizedBox(
                   width: barWidth,
                   height: height,
-                  child: CustomPaint(
-                    painter: StrippedProgressPainter(
-                      progress: progress + 0.05,
-                      cornerRadius: height / 2,
-                    ),
+                  child: GameLinearBar.yellow(
+                    width: barWidth,
+                    height: height,
+                    percent: progress,
                   ),
                 ),
               ),

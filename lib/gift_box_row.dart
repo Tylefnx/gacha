@@ -6,13 +6,14 @@ class GiftBoxRow extends StatelessWidget {
   final double circleRadius;
   final int currentPoints;
   final int maxPoints;
-
+  final int collectedChests;
   const GiftBoxRow({
     super.key,
     required this.milestones,
     required this.currentPoints,
     required this.maxPoints,
     this.circleRadius = 15,
+    required this.collectedChests,
   });
 
   @override
@@ -30,7 +31,7 @@ class GiftBoxRow extends StatelessWidget {
         );
 
         final textSpan = TextSpan(
-          text: '$currentPoints / $maxPoints',
+          text: '$collectedChests / $maxPoints',
           style: textStyle,
         );
 
@@ -50,7 +51,7 @@ class GiftBoxRow extends StatelessWidget {
             children: [
               _PointsIndicatorText(
                 verticalOffset: verticalOffset,
-                currentPoints: currentPoints,
+                collectedChests: collectedChests,
                 textStyle: textStyle,
                 maxPoints: maxPoints,
               ),
@@ -96,7 +97,7 @@ class _ChestBoxWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            radius: 0.5,
+            radius: 0.4,
             colors: milestoneReached
                 ? [Colors.white, Colors.grey]
                 : [Colors.white, Colors.orange],
@@ -131,13 +132,13 @@ class _ChestBoxWidget extends StatelessWidget {
 class _PointsIndicatorText extends StatelessWidget {
   const _PointsIndicatorText({
     required this.verticalOffset,
-    required this.currentPoints,
+    required this.collectedChests,
     required this.textStyle,
     required this.maxPoints,
   });
 
   final double verticalOffset;
-  final int currentPoints;
+  final int collectedChests;
   final TextStyle textStyle;
   final int maxPoints;
 
@@ -151,7 +152,7 @@ class _PointsIndicatorText extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             children: [
-              TextSpan(text: '$currentPoints', style: textStyle),
+              TextSpan(text: '$collectedChests', style: textStyle),
               TextSpan(
                 text: ' / $maxPoints',
                 style: textStyle.copyWith(
