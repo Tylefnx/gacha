@@ -19,6 +19,7 @@ class GridStateNotifier extends ChangeNotifier {
 
   void _initAvailableIndices() {
     for (int i = 0; i < 16; i++) {
+      print(i);
       if (![5, 6, 9, 10].contains(i)) {
         _availableIndices.add(i);
       }
@@ -30,17 +31,23 @@ class GridStateNotifier extends ChangeNotifier {
     _animatedBoxIndex = null;
     notifyListeners();
 
+    final List<int> pattern = [0, 1, 2, 3, 7, 11, 15, 14, 13, 12, 8, 4];
     final Random random = Random();
-    int spinCount =
-        _availableIndices.length * 2 + random.nextInt(_availableIndices.length);
-    for (int i = 0; i < spinCount; i++) {
-      _highlightedBoxIndex = _availableIndices[i % _availableIndices.length];
+    final int repeatCount =
+        3; // Kaç kez pattern dönsün istiyorsan burayı değiştir
+    final List<int> sequence = List.generate(
+      repeatCount * pattern.length,
+      (index) => pattern[index % pattern.length],
+    );
+
+    for (int index in sequence) {
+      print(index);
+      _highlightedBoxIndex = index;
       notifyListeners();
       await Future.delayed(const Duration(milliseconds: 70));
     }
 
-    _animatedBoxIndex =
-        _availableIndices[random.nextInt(_availableIndices.length)];
+    _animatedBoxIndex = pattern[random.nextInt(pattern.length)];
     _highlightedBoxIndex = null;
     notifyListeners();
   }

@@ -4,7 +4,7 @@ import 'package:gacha/gift_box_row.dart';
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:gacha/reward_progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:gacha/game_item.dart'; // GameItem ve getMockGameItems'ı kullanmak için dahil ettik
+import 'package:gacha/game_item.dart';
 
 class GachaPage extends StatelessWidget {
   const GachaPage({super.key});
@@ -12,7 +12,7 @@ class GachaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentPoints = 80;
-    final List<GameItem> mockItems = getMockGameItems(); // Mock öğeleri aldık
+    final List<GameItem> mockItems = getMockGameItems();
 
     return Scaffold(
       appBar: AppBar(
@@ -59,25 +59,13 @@ class GachaPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () {
-              Provider.of<GridStateNotifier>(
-                context,
-                listen: false,
-              ).startSpinningAndSelect();
-            },
-            tooltip: 'Rastgele kutu seç ve canlandır',
+            onPressed: spin(context),
             backgroundColor: const Color(0xFF6A0DAD),
             foregroundColor: Colors.white,
             child: const Icon(Icons.shuffle),
           ),
           FloatingActionButton(
-            onPressed: () {
-              Provider.of<GridStateNotifier>(
-                context,
-                listen: false,
-              ).spinMultipleTimes(10);
-            },
-            tooltip: 'Rastgele kutu seç ve canlandır',
+            onPressed: spinTenTimes(context),
             backgroundColor: const Color(0xFF6A0DAD),
             foregroundColor: Colors.white,
             child: const Icon(Icons.access_time),
@@ -121,4 +109,22 @@ class GachaHud extends StatelessWidget {
       ],
     );
   }
+}
+
+void Function() spinTenTimes(BuildContext context) {
+  return () {
+    Provider.of<GridStateNotifier>(
+      context,
+      listen: false,
+    ).spinMultipleTimes(10);
+  };
+}
+
+void Function() spin(BuildContext context) {
+  return () {
+    Provider.of<GridStateNotifier>(
+      context,
+      listen: false,
+    ).startSpinningAndSelect();
+  };
 }
