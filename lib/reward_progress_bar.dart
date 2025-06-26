@@ -20,10 +20,24 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double barWidth = constraints.maxWidth;
-        final double offset = barWidth * 0.1;
+        final double offset = 0.1;
         final double progress =
-            (currentPoints / (milestones.last * 1.25)) + 0.1;
+            (currentPoints / (milestones.last * 1.25)) + offset;
 
+        var createdMileStoneCircles = milestones.map((milestone) {
+          return Positioned(
+            left:
+                ((barWidth * (milestone / (milestones.last * 1.25))) -
+                    milestoneRadius) +
+                barWidth * offset,
+            top: (height / 2) - milestoneRadius,
+            child: _BuildMilestoneCircle(
+              milestone: milestone,
+              reached: currentPoints >= milestone,
+              radius: milestoneRadius,
+            ),
+          );
+        });
         return SizedBox(
           height: height,
           width: constraints.maxWidth,
@@ -33,39 +47,58 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
               Positioned(
                 top: 0,
                 bottom: 0,
-                child: SizedBox(
-                  width: barWidth,
+                child: _ChestRewardProgressBar(
+                  barWidth: barWidth,
                   height: height,
-                  child: GameLinearBar.yellow(
-                    width: barWidth,
-                    height: height,
-                    percent: progress,
-                  ),
+                  progress: progress,
                 ),
               ),
-
-              ...milestones.map((milestone) {
-                return Positioned(
-                  left:
-                      ((barWidth * (milestone / (milestones.last * 1.25))) -
-                          milestoneRadius) +
-                      offset,
-                  top: (height / 2) - milestoneRadius,
-                  child: _buildMilestoneCircle(
-                    milestone,
-                    currentPoints >= milestone,
-                    milestoneRadius,
-                  ),
-                );
-              }),
+              ...createdMileStoneCircles,
             ],
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildMilestoneCircle(int milestone, bool reached, double radius) {
+class _ChestRewardProgressBar extends StatelessWidget {
+  const _ChestRewardProgressBar({
+    required this.barWidth,
+    required this.height,
+    required this.progress,
+  });
+
+  final double barWidth;
+  final double height;
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: barWidth,
+      height: height,
+      child: GameLinearBar.yellow(
+        width: barWidth,
+        height: height,
+        percent: progress,
+      ),
+    );
+  }
+}
+
+class _BuildMilestoneCircle extends StatelessWidget {
+  const _BuildMilestoneCircle({
+    required this.milestone,
+    required this.reached,
+    required this.radius,
+  });
+  final int milestone;
+  final bool reached;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: radius * 2,
       height: radius * 2,

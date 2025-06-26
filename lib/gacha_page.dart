@@ -11,7 +11,7 @@ class GachaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentPoints = 40;
+    final currentPoints = 80;
     final List<GameItem> mockItems = getMockGameItems(); // Mock öğeleri aldık
 
     return Scaffold(
@@ -49,9 +49,7 @@ class GachaPage extends StatelessWidget {
                 currentPoints: currentPoints,
                 milestones: [40, 80, 120, 160],
               ),
-              AnimatedGridBoxWithProvider(
-                gameItems: mockItems,
-              ), // mockItems'ı buraya ilettik
+              AnimatedGridBoxWithProvider(gameItems: mockItems),
             ],
           ),
         ),
