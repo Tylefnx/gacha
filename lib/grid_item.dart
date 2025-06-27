@@ -7,13 +7,9 @@ import 'package:provider/provider.dart';
 
 class GridItem extends StatefulWidget {
   final int index;
-  final GameItem gameItem; // GameItem nesnesini ekledik
+  final GameItem gameItem;
 
-  const GridItem({
-    required this.index,
-    required this.gameItem,
-    super.key,
-  }); // Constructor'ı güncelledik
+  const GridItem({super.key, required this.index, required this.gameItem});
 
   @override
   State<GridItem> createState() => _GridItemState();
@@ -34,7 +30,7 @@ class _GridItemState extends State<GridItem>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final gridState = Provider.of<GridStateNotifier>(context);
-    final isAnimated = (gridState.animatedBoxIndex == widget.index);
+    final bool isAnimated = (gridState.animatedBoxIndex == widget.index);
 
     if (isAnimated) {
       _animationController.forward(from: 0.0);
@@ -53,7 +49,7 @@ class _GridItemState extends State<GridItem>
     if (item.bgColor != null) {
       return Color(item.bgColor!);
     }
-    // Varsayılan renkler, eğer bgColor null ise
+    // Fallback colors based on index if bgColor is null
     if ([0, 1, 5, 9].contains(widget.index)) {
       return const Color(0xFF3366CC);
     } else if ([4, 8, 12, 13].contains(widget.index)) {
@@ -64,20 +60,24 @@ class _GridItemState extends State<GridItem>
   }
 
   Color _getBorderColor(bool isHighlighted, bool isAnimated) {
-    if (isHighlighted || isAnimated) return AppColors.yellow;
+    if (isHighlighted || isAnimated) {
+      return AppColors.yellow;
+    }
     return Colors.transparent;
   }
 
   @override
   Widget build(BuildContext context) {
-    final gridState = Provider.of<GridStateNotifier>(context);
-    final isHighlighted = (gridState.highlightedBoxIndex == widget.index);
-    final isAnimated = (gridState.animatedBoxIndex == widget.index);
+    if ([5, 6, 9, 10].contains(widget.index)) {
+      return const SizedBox.shrink();
+    }
 
-    if ([5, 6, 9, 10].contains(widget.index)) return const SizedBox.shrink();
+    final GridStateNotifier gridState = Provider.of<GridStateNotifier>(context);
+    final bool isHighlighted = (gridState.highlightedBoxIndex == widget.index);
+    final bool isAnimated = (gridState.animatedBoxIndex == widget.index);
 
-    final baseColor = _getBaseColor(widget.gameItem); // GameItem'ı gönderdik
-    final borderColor = _getBorderColor(isHighlighted, isAnimated);
+    final Color baseColor = _getBaseColor(widget.gameItem);
+    final Color borderColor = _getBorderColor(isHighlighted, isAnimated);
 
     return ScaleTransition(
       scale: _scaleAnimation,
@@ -86,9 +86,7 @@ class _GridItemState extends State<GridItem>
         borderColor: borderColor,
         isAnimated: isAnimated,
         isHighlighted: isHighlighted,
-        child: GridContent(
-          gameItem: widget.gameItem,
-        ), // GameItem'ı GridContent'e geçirdik
+        child: GridContent(gameItem: widget.gameItem),
       ),
     );
   }

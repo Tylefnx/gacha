@@ -21,40 +21,56 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double barWidth = constraints.maxWidth;
-        const double offset = 0.1;
-        final double progress =
-            (currentPoints / (milestones.last * 1.25)) + offset;
+        const double offsetFactor =
+            0.1; // Bar ve mihenk taşlarının başlangıç ofseti
+        final double maxProgressValue = milestones.last * 1.25;
 
-        final createdMileStoneCircles = milestones.map((milestone) {
-          return Positioned(
-            left:
-                ((barWidth * (milestone / (milestones.last * 1.25))) -
-                    milestoneRadius) +
-                barWidth * offset,
-            top: (height / 2) - milestoneRadius,
-            child: _BuildMilestoneCircle(
-              milestone: milestone,
-              reached: currentPoints >= milestone,
-              radius: milestoneRadius,
-            ),
-          );
-        });
+        // İlerleme yüzdesi, ofset faktörü ile birlikte
+        final double progressPercent =
+            (currentPoints / maxProgressValue).clamp(0.0, 1.0) + offsetFactor;
+
         return SizedBox(
           height: height,
-          width: constraints.maxWidth,
+          width: barWidth,
           child: Stack(
-            clipBehavior: Clip.none,
+            clipBehavior: Clip.none, // Çocukların dışarı taşmasına izin verir
             children: [
+              // İlerleme çubuğu
               Positioned(
                 top: 0,
                 bottom: 0,
-                child: _ChestRewardProgressBar(
-                  barWidth: barWidth,
+                child: SizedBox(
+                  width: barWidth,
                   height: height,
-                  progress: progress,
+                  child: GameLinearBar.yellow(
+                    width: barWidth,
+                    height: height,
+                    percent: progressPercent,
+                  ),
                 ),
               ),
-              ...createdMileStoneCircles,
+              // Mihenk taşı daireleri
+              ...milestones.map((milestone) {
+                // Mihenk taşının çubuk üzerindeki orantılı konumu
+                final double milestonePositionFactor =
+                    milestone / maxProgressValue;
+                // Mihenk taşının mutlak yatay konumu (ofset faktörü dahil)
+                final double actualLeftPosition =
+                    (barWidth * milestonePositionFactor) +
+                    (barWidth * offsetFactor);
+
+                return Positioned(
+                  left:
+                      actualLeftPosition -
+                      milestoneRadius, // Daireyi merkeze hizala
+                  top: (height / 2) - milestoneRadius, // Daireyi dikeyde ortala
+                  child: _BuildMilestoneCircle(
+                    milestone: milestone,
+                    reached: currentPoints >= milestone,
+                    radius: milestoneRadius,
+                  ),
+                );
+              }),
             ],
           ),
         );
@@ -63,40 +79,16 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
   }
 }
 
-class _ChestRewardProgressBar extends StatelessWidget {
-  const _ChestRewardProgressBar({
-    required this.barWidth,
-    required this.height,
-    required this.progress,
-  });
-
-  final double barWidth;
-  final double height;
-  final double progress;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: barWidth,
-      height: height,
-      child: GameLinearBar.yellow(
-        width: barWidth,
-        height: height,
-        percent: progress,
-      ),
-    );
-  }
-}
-
 class _BuildMilestoneCircle extends StatelessWidget {
+  final int milestone;
+  final bool reached;
+  final double radius;
+
   const _BuildMilestoneCircle({
     required this.milestone,
     required this.reached,
     required this.radius,
   });
-  final int milestone;
-  final bool reached;
-  final double radius;
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:gacha/game_item.dart';
 import 'package:gacha/get_mock_game_items.dart';
 
 class GridStateNotifier extends ChangeNotifier {
-  // Animation and Highlight state
+  // Animasyon ve Vurgulama Durumu
   int? _animatedBoxIndex;
   int? get animatedBoxIndex => _animatedBoxIndex;
 
@@ -17,7 +17,7 @@ class GridStateNotifier extends ChangeNotifier {
   final List<int> _availableIndices = [];
   List<int> get availableIndices => _availableIndices;
 
-  // Game data properties
+  // Oyun Verisi Özellikleri
   int _currentPoints;
   int get currentPoints => _currentPoints;
 
@@ -35,8 +35,7 @@ class GridStateNotifier extends ChangeNotifier {
 
   GridStateNotifier()
     : _currentPoints = 80,
-      _items =
-          getMockGameItems(), // Assuming getMockGameItems() is defined elsewhere
+      _items = getMockGameItems(),
       _milestones = [40, 80, 120, 160],
       _maxPoints = 75,
       _collectedChests = 44 {
@@ -44,11 +43,10 @@ class GridStateNotifier extends ChangeNotifier {
   }
 
   void _initAvailableIndices() {
-    for (int i = 0; i < 16; i++) {
-      if (![5, 6, 9, 10].contains(i)) {
-        _availableIndices.add(i);
-      }
-    }
+    // Merkezdeki kutular ([5, 6, 9, 10]) hariç tüm indeksleri ekler
+    _availableIndices.addAll(
+      List.generate(16, (i) => i).where((i) => ![5, 6, 9, 10].contains(i)),
+    );
   }
 
   Future<void> _spinSequence({
@@ -63,7 +61,6 @@ class GridStateNotifier extends ChangeNotifier {
   }
 
   Future<void> startSpinningAndSelect() async {
-    // Reset previous animation
     _animatedBoxIndex = null;
     notifyListeners();
 
@@ -72,7 +69,7 @@ class GridStateNotifier extends ChangeNotifier {
     const int repeatCount = 3;
 
     final int startIndexInPattern =
-        _lastSelectedIndex != null && pattern.contains(_lastSelectedIndex)
+        (_lastSelectedIndex != null && pattern.contains(_lastSelectedIndex))
         ? pattern.indexOf(_lastSelectedIndex!)
         : 0;
 
@@ -88,20 +85,20 @@ class GridStateNotifier extends ChangeNotifier {
 
     final int finalSelectedIndex = pattern[random.nextInt(pattern.length)];
 
-    final int currentHighlightIndexInPattern =
+    final List<int> slowTransitionSequence = [];
+    int currentIndex =
         _highlightedBoxIndex != null && pattern.contains(_highlightedBoxIndex)
         ? pattern.indexOf(_highlightedBoxIndex!)
         : startIndexInPattern;
 
-    final List<int> slowTransitionSequence = [];
-    int currentIndex = currentHighlightIndexInPattern;
-    do {
+    // Hedef indekse kadar döngü
+    while (true) {
       slowTransitionSequence.add(pattern[currentIndex]);
       if (pattern[currentIndex] == finalSelectedIndex) {
         break;
       }
       currentIndex = (currentIndex + 1) % pattern.length;
-    } while (true);
+    }
 
     await _spinSequence(
       sequence: slowTransitionSequence,
@@ -138,14 +135,4 @@ class GridStateNotifier extends ChangeNotifier {
     _collectedChests++;
     notifyListeners();
   }
-}
-
-int findShortestCircularDistance(List<int> list, int value1, int value2) {
-  final index1 = list.indexOf(value1);
-  final index2 = list.indexOf(value2);
-  final listLength = list.length;
-  final forwardDistance = (index2 - index1 + listLength) % listLength;
-  final backwardDistance = (index1 - index2 + listLength) % listLength;
-
-  return min(forwardDistance, backwardDistance);
 }
