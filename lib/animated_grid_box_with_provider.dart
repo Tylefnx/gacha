@@ -261,17 +261,17 @@ class MainGridContainer extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF1A1953).withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(36),
-          border: Border.all(color: const Color(0xffAF97DC), width: 4),
+          border: Border.all(color: AppColors.purpleAccent, width: 4),
           boxShadow: [
             BoxShadow(
-              color: Color(0xFFD3CAFF).withValues(alpha: 0.7),
+              color: AppColors.whitishPurple.withValues(alpha: 0.7),
               spreadRadius: 0,
               blurRadius: 12.8,
               offset: const Offset(6, 6),
               inset: true,
             ),
             BoxShadow(
-              color: Color(0xFF7D60FF).withValues(alpha: 0.7),
+              color: AppColors.lightPurple.withValues(alpha: 0.7),
               spreadRadius: 0,
               blurRadius: 12.8,
               inset: true,
@@ -372,10 +372,9 @@ class ShiningDot extends StatelessWidget {
   final double? blurRadius;
   final double? spreadRadius;
   final double? opacity;
-  final bool _isLight; // Bu noktanın ışıklı olup olmadığını belirler
+  final bool _isLight;
 
-  // Özel, isimsiz bir constructor. Yalnızca factory constructor'lar aracılığıyla çağrılabilir.
-  const ShiningDot._internal({
+  const ShiningDot._({
     super.key,
     required this.color,
     this.size = 7.5,
@@ -393,23 +392,18 @@ class ShiningDot extends StatelessWidget {
     double spreadRadius = 3,
     double opacity = 0.6,
   }) {
-    return ShiningDot._internal(
+    return ShiningDot._(
       key: key,
       color: color,
       blurRadius: blurRadius,
       spreadRadius: spreadRadius,
       opacity: opacity,
-      isLight: true, // Işıklı nokta olduğunu belirtir
+      isLight: true,
     );
   }
 
-  /// Işıksız (düz renkli) bir nokta oluşturur.
   factory ShiningDot.plain({Key? key, Color color = Colors.white}) {
-    return ShiningDot._internal(
-      key: key,
-      color: color,
-      isLight: false, // Işıksız nokta olduğunu belirtir
-    );
+    return ShiningDot._(key: key, color: color, isLight: false);
   }
 
   @override
@@ -418,21 +412,14 @@ class ShiningDot extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: _isLight
-            ? color.withValues(alpha: 1.0)
-            : color, // Işıklıysa tam opaklık, yoksa normal renk
-        shape: BoxShape.circle, // Dairesel şekil
-        boxShadow:
-            _isLight // Sadece ışıklıysa BoxShadow ekle
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: _isLight
             ? [
                 BoxShadow(
-                  color: color.withValues(
-                    alpha: opacity ?? 0.6,
-                  ), // Parlamanın rengi ve varsayılan opaklığı
-                  blurRadius:
-                      blurRadius ?? 10, // Parlamanın varsayılan yayılma miktarı
-                  spreadRadius:
-                      spreadRadius ?? 3, // Parlamanın varsayılan boyut artışı
+                  color: color.withValues(alpha: opacity ?? 0.6),
+                  blurRadius: blurRadius ?? 10,
+                  spreadRadius: spreadRadius ?? 3,
                 ),
               ]
             : null, // Işıksız ise boxShadow olmasın
