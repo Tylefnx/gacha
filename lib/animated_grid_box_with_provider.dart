@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element_parameter
+
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:gacha/app_colors.dart';
 import 'package:gacha/grid_state_notifier.dart';
@@ -298,11 +300,22 @@ class MainGridContainer extends StatelessWidget {
                   width: centerBoxSize,
                   height: centerBoxSize,
                   child: Center(
-                    child: Image.asset(
-                      'assets/gift.png',
-                      fit: BoxFit.cover,
-                      width: centerBoxSize / 2,
-                      height: centerBoxSize / 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        spacing: 5,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DotsRow.lightThenPlain(),
+                          Image.asset(
+                            'assets/gift.png',
+                            fit: BoxFit.cover,
+                            width: centerBoxSize / 2,
+                            height: centerBoxSize / 2,
+                          ),
+                          DotsRow.plainThenLight(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -310,6 +323,119 @@ class MainGridContainer extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DotsRow extends StatelessWidget {
+  final List<Widget> children;
+
+  const DotsRow._({required this.children});
+
+  factory DotsRow.lightThenPlain({int count = 6}) {
+    final List<Widget> dots = [];
+    for (int i = 0; i < count; i++) {
+      if (i % 2 == 0) {
+        dots.add(ShiningDot.light());
+      } else {
+        dots.add(ShiningDot.plain());
+      }
+    }
+    return DotsRow._(children: dots);
+  }
+
+  factory DotsRow.plainThenLight({int count = 6}) {
+    final List<Widget> dots = [];
+    for (int i = 0; i < count; i++) {
+      if (i % 2 == 0) {
+        dots.add(ShiningDot.plain());
+      } else {
+        dots.add(ShiningDot.light());
+      }
+    }
+    return DotsRow._(children: dots);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: children,
+    );
+  }
+}
+
+class ShiningDot extends StatelessWidget {
+  final Color color;
+  final double size;
+  final double? blurRadius;
+  final double? spreadRadius;
+  final double? opacity;
+  final bool _isLight; // Bu noktanın ışıklı olup olmadığını belirler
+
+  // Özel, isimsiz bir constructor. Yalnızca factory constructor'lar aracılığıyla çağrılabilir.
+  const ShiningDot._internal({
+    super.key,
+    required this.color,
+    this.size = 7.5,
+    this.blurRadius,
+    this.spreadRadius,
+    this.opacity,
+    required bool isLight,
+  }) : _isLight = isLight;
+
+  /// Işıklı (parlayan) bir nokta oluşturur.
+  factory ShiningDot.light({
+    Key? key,
+    Color color = Colors.white,
+    double blurRadius = 7.5,
+    double spreadRadius = 3,
+    double opacity = 0.6,
+  }) {
+    return ShiningDot._internal(
+      key: key,
+      color: color,
+      blurRadius: blurRadius,
+      spreadRadius: spreadRadius,
+      opacity: opacity,
+      isLight: true, // Işıklı nokta olduğunu belirtir
+    );
+  }
+
+  /// Işıksız (düz renkli) bir nokta oluşturur.
+  factory ShiningDot.plain({Key? key, Color color = Colors.white}) {
+    return ShiningDot._internal(
+      key: key,
+      color: color,
+      isLight: false, // Işıksız nokta olduğunu belirtir
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: _isLight
+            ? color.withValues(alpha: 1.0)
+            : color, // Işıklıysa tam opaklık, yoksa normal renk
+        shape: BoxShape.circle, // Dairesel şekil
+        boxShadow:
+            _isLight // Sadece ışıklıysa BoxShadow ekle
+            ? [
+                BoxShadow(
+                  color: color.withValues(
+                    alpha: opacity ?? 0.6,
+                  ), // Parlamanın rengi ve varsayılan opaklığı
+                  blurRadius:
+                      blurRadius ?? 10, // Parlamanın varsayılan yayılma miktarı
+                  spreadRadius:
+                      spreadRadius ?? 3, // Parlamanın varsayılan boyut artışı
+                ),
+              ]
+            : null, // Işıksız ise boxShadow olmasın
       ),
     );
   }
