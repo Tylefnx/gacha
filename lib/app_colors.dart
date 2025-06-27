@@ -1,4 +1,4 @@
-import 'dart:ui'; // Color sınıfı için
+import 'dart:ui';
 
 class AppColors {
   const AppColors._();

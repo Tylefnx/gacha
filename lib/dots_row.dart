@@ -8,27 +8,21 @@ class DotsRow extends StatelessWidget {
   const DotsRow._({required this.children});
 
   factory DotsRow.lightThenPlain({int count = 6}) {
-    final List<Widget> dots = [];
-    for (int i = 0; i < count; i++) {
-      if (i.isEven) {
-        dots.add(ShiningDot.light());
-      } else {
-        dots.add(ShiningDot.plain());
-      }
-    }
-    return DotsRow._(children: dots);
+    return DotsRow._(
+      children: List.generate(
+        count,
+        (i) => i.isEven ? ShiningDot.light() : ShiningDot.plain(),
+      ),
+    );
   }
 
   factory DotsRow.plainThenLight({int count = 6}) {
-    final List<Widget> dots = [];
-    for (int i = 0; i < count; i++) {
-      if (i.isEven) {
-        dots.add(ShiningDot.plain());
-      } else {
-        dots.add(ShiningDot.light());
-      }
-    }
-    return DotsRow._(children: dots);
+    return DotsRow._(
+      children: List.generate(
+        count,
+        (i) => i.isEven ? ShiningDot.plain() : ShiningDot.light(),
+      ),
+    );
   }
 
   @override
@@ -46,7 +40,7 @@ class ShiningDot extends StatelessWidget {
   final double? blurRadius;
   final double? spreadRadius;
   final double? opacity;
-  final bool _isLight;
+  final bool _hasShadow;
 
   const ShiningDot._({
     super.key,
@@ -55,10 +49,9 @@ class ShiningDot extends StatelessWidget {
     this.blurRadius,
     this.spreadRadius,
     this.opacity,
-    required bool isLight,
-  }) : _isLight = isLight;
+    required bool hasShadow,
+  }) : _hasShadow = hasShadow;
 
-  /// Işıklı (parlayan) bir nokta oluşturur.
   factory ShiningDot.light({
     Key? key,
     Color color = Colors.white,
@@ -72,12 +65,12 @@ class ShiningDot extends StatelessWidget {
       blurRadius: blurRadius,
       spreadRadius: spreadRadius,
       opacity: opacity,
-      isLight: true,
+      hasShadow: true,
     );
   }
 
   factory ShiningDot.plain({Key? key, Color color = Colors.white}) {
-    return ShiningDot._(key: key, color: color, isLight: false);
+    return ShiningDot._(key: key, color: color, hasShadow: false);
   }
 
   @override
@@ -88,7 +81,7 @@ class ShiningDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        boxShadow: _isLight
+        boxShadow: _hasShadow
             ? [
                 BoxShadow(
                   color: color.withValues(alpha: opacity ?? 0.6),
@@ -96,7 +89,7 @@ class ShiningDot extends StatelessWidget {
                   spreadRadius: spreadRadius ?? 3,
                 ),
               ]
-            : null, // Işıksız ise boxShadow olmasın
+            : null,
       ),
     );
   }

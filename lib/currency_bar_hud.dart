@@ -1,25 +1,93 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart'; // Eğer withValues yerine withOpacity kullanılıyorsa bu import kaldırılabilir.
 import 'package:gacha/app_colors.dart';
 
 class CurrencyBarHud extends StatelessWidget {
+  final String currencyImagePath;
+  final int amount;
+
   const CurrencyBarHud({
     super.key,
     required this.currencyImagePath,
     required this.amount,
   });
-  final String currencyImagePath;
-  final int amount;
+
   @override
   Widget build(BuildContext context) {
+    const double containerHeight = 38;
+    const double barHeight = 28;
+    const double barTopOffset = (containerHeight - barHeight) / 2;
+
     return SizedBox(
-      width: 107, // Tasarımın toplam genişliği
-      height: 38,
+      width: 107,
+      height: containerHeight,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          const _CurrencyBarContainer(),
-          _CurrencyBarText(amount: amount),
-          _CurrencyBarImage(currencyImagePath: currencyImagePath),
+          // _CurrencyBarContainer içeriği
+          Positioned(
+            right: 0,
+            top: barTopOffset,
+            child: Container(
+              width: 102,
+              height: barHeight,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF241F0F).withValues(alpha: 0.4),
+                    blurRadius: 5,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(35),
+                border: Border.all(color: AppColors.mustard, width: 2),
+              ),
+              child: Opacity(
+                opacity: 0.2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Colors.white, AppColors.darkMustard],
+                    ),
+                    borderRadius: BorderRadius.circular(35),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // _CurrencyBarText içeriği
+          Positioned(
+            right: 0,
+            top: barTopOffset,
+            child: Container(
+              width: 102,
+              height: barHeight,
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Text(
+                  '$amount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // _CurrencyBarImage içeriği
+          Positioned(
+            left: -5,
+            top: (containerHeight - 35) / 2,
+            child: Image.asset(
+              currencyImagePath,
+              width: 35,
+              height: 35,
+              fit: BoxFit.contain,
+            ),
+          ),
+          // _BuyCurrencyButton içeriği
           const _BuyCurrencyButton(),
         ],
       ),
@@ -33,26 +101,23 @@ class _BuyCurrencyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      // Butonun coin ile dikdörtgen arasına gelmesi için konumlandırıldı
       left: 20,
       bottom: 0,
       child: InkWell(
         onTap: () {
-          // Tıklama işlevi eklenebilir
+          // TODO: Tıklama işlevi eklenecek
         },
         child: Container(
-          width: 16, // Butonun genişliği
-          height: 16, // Butonun yüksekliği
+          width: 16,
+          height: 16,
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.darkGreen),
-            // BURAYA YEŞİL VE BEYAZ GRADYAN EKLENDİ
             gradient: const LinearGradient(
               colors: [AppColors.green, AppColors.whitishGreen],
-              begin: Alignment.bottomCenter, // Gradyan başlangıç yönü
-              end: Alignment.topCenter, // Gradyan bitiş yönü
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
             ),
-            // 'color: Colors.green' satırı kaldırıldı çünkü gradyan tanımlandı
-            shape: BoxShape.circle, // Yuvarlak şekil
+            shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.3),
@@ -62,102 +127,7 @@ class _BuyCurrencyButton extends StatelessWidget {
               ),
             ],
           ),
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 14, // Artı ikonunun boyutu
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CurrencyBarImage extends StatelessWidget {
-  const _CurrencyBarImage({required this.currencyImagePath});
-
-  final String currencyImagePath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left:
-          -5, // Coin'in sol kenardan biraz dışarı taşmasını sağlar (Figma'daki gibi)
-      top:
-          (38 - 35) /
-          2, // Kapsayıcı (38) ve coin (35) yüksekliğine göre dikeyde ortala
-      child: Image.asset(
-        currencyImagePath, // Resminizin doğru yolu
-        width: 35, // Coin'in genişliği
-        height: 35, // Coin'in yüksekliği
-        fit: BoxFit.contain, // İçine sığdırma modu
-      ),
-    );
-  }
-}
-
-class _CurrencyBarText extends StatelessWidget {
-  const _CurrencyBarText({required this.amount});
-
-  final int amount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: 0,
-      top: (38 - 28) / 2,
-      child: Container(
-        width: 102,
-        height: 28,
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Text(
-            '$amount',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CurrencyBarContainer extends StatelessWidget {
-  const _CurrencyBarContainer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: 0,
-      top: (38 - 28) / 2,
-      child: Container(
-        width: 102,
-        height: 28,
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF241F0F).withValues(alpha: 0.4),
-              blurRadius: 5,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(35),
-          border: Border.all(color: AppColors.mustard, width: 2),
-        ),
-        child: Opacity(
-          opacity: 0.2,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Colors.white, AppColors.darkMustard],
-              ),
-              borderRadius: BorderRadius.circular(35),
-            ),
-          ),
+          child: const Icon(Icons.add, color: Colors.white, size: 14),
         ),
       ),
     );
