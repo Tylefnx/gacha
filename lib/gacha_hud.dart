@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gacha/gacha_page.dart';
+import 'package:gacha/currency_bar_hud.dart';
 
 class GachaHud extends StatelessWidget {
   const GachaHud({super.key});
@@ -27,7 +27,10 @@ class GachaHud extends StatelessWidget {
             ),
           ],
         ),
-        TCoinDisplay(),
+        CurrencyBarHud(
+          currencyImagePath: 'assets/gacha_icon.png',
+          amount: 1000,
+        ),
       ],
     );
   }
