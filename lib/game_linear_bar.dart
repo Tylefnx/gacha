@@ -17,7 +17,6 @@ class GameLinearBar extends StatefulWidget {
     this.center,
   });
 
-  // Named Constructors
   factory GameLinearBar.green({
     required double width,
     required double height,

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gacha/game_item.dart';
+import 'package:gacha/get_mock_game_items.dart';
 
 class GridStateNotifier extends ChangeNotifier {
   // Animation and Highlight state

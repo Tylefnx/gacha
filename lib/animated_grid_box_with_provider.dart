@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:gacha/app_colors.dart';
-import 'package:gacha/game_item.dart'; // GameItem sınıfını dahil et
+import 'package:gacha/dots_row.dart';
+import 'package:gacha/game_item.dart';
+import 'package:gacha/grid_item.dart';
 import 'package:gacha/grid_state_notifier.dart';
-import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 
 class AnimatedGridBoxWithProvider extends StatelessWidget {
@@ -15,7 +16,6 @@ class AnimatedGridBoxWithProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // GridStateNotifier'dan kullanılabilir indeksleri doğrudan alalım
     final gridStateNotifier = Provider.of<GridStateNotifier>(
       context,
       listen: false,
@@ -42,18 +42,17 @@ class AnimatedGridBoxWithProvider extends StatelessWidget {
               ),
               itemCount: 16,
               itemBuilder: (context, index) {
-                // Merkezdeki kutulara öğe geçirmiyoruz
                 if ([5, 6, 9, 10].contains(index)) {
                   return const SizedBox.shrink();
                 }
 
-                final int actualGridItemIndex = availableGridIndices.indexOf(
+                final int availableIndexInList = availableGridIndices.indexOf(
                   index,
                 );
 
-                if (actualGridItemIndex != -1) {
+                if (availableIndexInList != -1) {
                   final GameItem item =
-                      gameItems[actualGridItemIndex % gameItems.length];
+                      gameItems[availableIndexInList % gameItems.length];
                   return GridItem(index: index, gameItem: item);
                 }
                 return const SizedBox.shrink();
@@ -62,169 +61,6 @@ class AnimatedGridBoxWithProvider extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-}
-// Diğer sınıflar aynı kalır.
-
-class GridItem extends StatefulWidget {
-  final int index;
-  final GameItem gameItem; // GameItem nesnesini ekledik
-
-  const GridItem({
-    required this.index,
-    required this.gameItem,
-    super.key,
-  }); // Constructor'ı güncelledik
-
-  @override
-  State<GridItem> createState() => _GridItemState();
-}
-
-class _GridItemState extends State<GridItem>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController = AnimationController(
-    duration: const Duration(milliseconds: 700),
-    vsync: this,
-  );
-  late final Animation<double> _scaleAnimation =
-      Tween<double>(begin: 1.0, end: 1.15).animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-      );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final gridState = Provider.of<GridStateNotifier>(context);
-    final isAnimated = (gridState.animatedBoxIndex == widget.index);
-
-    if (isAnimated) {
-      _animationController.forward(from: 0.0);
-    } else {
-      _animationController.reverse();
-    }
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  Color _getBaseColor(GameItem item) {
-    if (item.bgColor != null) {
-      return Color(item.bgColor!);
-    }
-    // Varsayılan renkler, eğer bgColor null ise
-    if ([0, 1, 5, 9].contains(widget.index)) {
-      return const Color(0xFF3366CC);
-    } else if ([4, 8, 12, 13].contains(widget.index)) {
-      return const Color(0xFF8A2BE2);
-    } else {
-      return const Color(0xFFFF8C00);
-    }
-  }
-
-  Color _getBorderColor(bool isHighlighted, bool isAnimated) {
-    if (isHighlighted || isAnimated) return AppColors.yellow;
-    return Colors.transparent;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final gridState = Provider.of<GridStateNotifier>(context);
-    final isHighlighted = (gridState.highlightedBoxIndex == widget.index);
-    final isAnimated = (gridState.animatedBoxIndex == widget.index);
-
-    if ([5, 6, 9, 10].contains(widget.index)) return const SizedBox.shrink();
-
-    final baseColor = _getBaseColor(widget.gameItem); // GameItem'ı gönderdik
-    final borderColor = _getBorderColor(isHighlighted, isAnimated);
-
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: GlowContainer(
-        baseColor: baseColor,
-        borderColor: borderColor,
-        isAnimated: isAnimated,
-        isHighlighted: isHighlighted,
-        child: GridContent(
-          gameItem: widget.gameItem,
-        ), // GameItem'ı GridContent'e geçirdik
-      ),
-    );
-  }
-}
-
-class GlowContainer extends StatelessWidget {
-  final Color borderColor;
-  final Color baseColor;
-  final Widget child;
-
-  const GlowContainer({
-    required this.borderColor,
-    required this.baseColor,
-    required this.child,
-    super.key,
-    required this.isAnimated,
-    required this.isHighlighted,
-  });
-  final bool isAnimated;
-  final bool isHighlighted;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        gradient: RadialGradient(
-          colors: [Colors.white, baseColor],
-          radius: 0.4,
-        ),
-        color: baseColor,
-        borderRadius: BorderRadius.circular(8),
-        border: (isHighlighted || isAnimated)
-            ? const GradientBoxBorder(
-                width: 3,
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [AppColors.darkYellow, AppColors.darkerOrange],
-                ),
-              )
-            : Border.all(color: borderColor, width: 3),
-        boxShadow: [
-          BoxShadow(
-            color: borderColor.withValues(alpha: 0.7),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}
-
-class GridContent extends StatelessWidget {
-  final GameItem gameItem;
-
-  const GridContent({required this.gameItem, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (gameItem.image != null)
-          Image.asset(
-            gameItem.image!,
-            fit: BoxFit.contain,
-            width: 50,
-            height: 50,
-          )
-        else
-          const Icon(Icons.category, size: 50, color: Colors.white54),
-      ],
     );
   }
 }
@@ -248,176 +84,105 @@ class MainGridContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.7),
+            color: Colors.black.withOpacity(0.7),
             blurRadius: 12.8,
             offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A1953).withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(36),
-          border: Border.all(color: AppColors.purpleAccent, width: 4),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.whitishPurple.withValues(alpha: 0.7),
-              blurRadius: 12.8,
-              offset: const Offset(6, 6),
-              inset: true,
-            ),
-            BoxShadow(
-              color: AppColors.lightPurple.withValues(alpha: 0.7),
-              blurRadius: 12.8,
-              inset: true,
-              offset: const Offset(-6, -6),
-            ),
-          ],
-        ),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Stack(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF200040),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Center(child: child),
-              ),
-              Align(
-                child: SizedBox(
-                  width: centerBoxSize,
-                  height: centerBoxSize,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        spacing: 5,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          DotsRow.lightThenPlain(),
-                          Image.asset(
-                            'assets/gift.png',
-                            fit: BoxFit.cover,
-                            width: centerBoxSize / 2,
-                            height: centerBoxSize / 2,
-                          ),
-                          DotsRow.plainThenLight(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+      child: MainGridContainerContents(
+        centerBoxSize: centerBoxSize,
+        child: child,
+      ),
+    );
+  }
+}
+
+class MainGridContainerContents extends StatelessWidget {
+  const MainGridContainerContents({
+    super.key,
+    required this.child,
+    required this.centerBoxSize,
+  });
+
+  final Widget child;
+  final double centerBoxSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1953).withOpacity(0.2),
+        borderRadius: BorderRadius.circular(36),
+        border: Border.all(color: AppColors.purpleAccent, width: 4),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.whitishPurple.withOpacity(0.7),
+            blurRadius: 12.8,
+            offset: const Offset(6, 6),
+            inset: true,
           ),
+          BoxShadow(
+            color: AppColors.lightPurple.withOpacity(0.7),
+            blurRadius: 12.8,
+            inset: true,
+            offset: const Offset(-6, -6),
+          ),
+        ],
+      ),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF200040),
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Center(child: child),
+            ),
+            Align(child: MainGridContainerCenter(centerBoxSize: centerBoxSize)),
+          ],
         ),
       ),
     );
   }
 }
 
-class DotsRow extends StatelessWidget {
-  final List<Widget> children;
+class MainGridContainerCenter extends StatelessWidget {
+  const MainGridContainerCenter({super.key, required this.centerBoxSize});
 
-  const DotsRow._({required this.children});
-
-  factory DotsRow.lightThenPlain({int count = 6}) {
-    final List<Widget> dots = [];
-    for (int i = 0; i < count; i++) {
-      if (i.isEven) {
-        dots.add(ShiningDot.light());
-      } else {
-        dots.add(ShiningDot.plain());
-      }
-    }
-    return DotsRow._(children: dots);
-  }
-
-  factory DotsRow.plainThenLight({int count = 6}) {
-    final List<Widget> dots = [];
-    for (int i = 0; i < count; i++) {
-      if (i.isEven) {
-        dots.add(ShiningDot.plain());
-      } else {
-        dots.add(ShiningDot.light());
-      }
-    }
-    return DotsRow._(children: dots);
-  }
+  final double centerBoxSize;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: children,
-    );
-  }
-}
-
-class ShiningDot extends StatelessWidget {
-  final Color color;
-  final double size;
-  final double? blurRadius;
-  final double? spreadRadius;
-  final double? opacity;
-  final bool _isLight;
-
-  const ShiningDot._({
-    super.key,
-    required this.color,
-    this.size = 7.5,
-    this.blurRadius,
-    this.spreadRadius,
-    this.opacity,
-    required bool isLight,
-  }) : _isLight = isLight;
-
-  /// Işıklı (parlayan) bir nokta oluşturur.
-  factory ShiningDot.light({
-    Key? key,
-    Color color = Colors.white,
-    double blurRadius = 7.5,
-    double spreadRadius = 3,
-    double opacity = 0.6,
-  }) {
-    return ShiningDot._(
-      key: key,
-      color: color,
-      blurRadius: blurRadius,
-      spreadRadius: spreadRadius,
-      opacity: opacity,
-      isLight: true,
-    );
-  }
-
-  factory ShiningDot.plain({Key? key, Color color = Colors.white}) {
-    return ShiningDot._(key: key, color: color, isLight: false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: _isLight
-            ? [
-                BoxShadow(
-                  color: color.withValues(alpha: opacity ?? 0.6),
-                  blurRadius: blurRadius ?? 10,
-                  spreadRadius: spreadRadius ?? 3,
-                ),
-              ]
-            : null, // Işıksız ise boxShadow olmasın
+    return SizedBox(
+      width: centerBoxSize,
+      height: centerBoxSize,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DotsRow.lightThenPlain(),
+              const SizedBox(height: 5),
+              Image.asset(
+                'assets/gift.png',
+                fit: BoxFit.cover,
+                width: centerBoxSize / 2,
+                height: centerBoxSize / 2,
+              ),
+              const SizedBox(height: 5),
+              DotsRow.plainThenLight(),
+            ],
+          ),
+        ),
       ),
     );
   }

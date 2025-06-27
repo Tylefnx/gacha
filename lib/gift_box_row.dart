@@ -48,35 +48,73 @@ class GiftBoxRow extends StatelessWidget {
 
         return SizedBox(
           height: containerHeight,
-          child: Stack(
-            children: [
-              _PointsIndicatorText(
-                verticalOffset: verticalOffset,
-                collectedChests: collectedChests,
-                textStyle: textStyle,
-                maxPoints: maxPoints,
-              ),
-
-              ...milestones.map((milestone) {
-                final milestoneReached = currentPoints >= milestone;
-                final double calculatedMaxPoints = (milestones.last + 20)
-                    .toDouble();
-                final factor = milestone / calculatedMaxPoints;
-                final centerX =
-                    textWidth +
-                    (progressWidth * factor).clamp(
-                      circleRadius,
-                      progressWidth - circleRadius,
-                    );
-                return _ChestBoxWidget(
-                  centerX: centerX,
-                  milestoneReached: milestoneReached,
-                );
-              }),
-            ],
+          child: _GiftBoxRowContent(
+            verticalOffset: verticalOffset,
+            collectedChests: collectedChests,
+            textStyle: textStyle,
+            maxPoints: maxPoints,
+            milestones: milestones,
+            currentPoints: currentPoints,
+            textWidth: textWidth,
+            progressWidth: progressWidth,
+            circleRadius: circleRadius,
           ),
         );
       },
+    );
+  }
+}
+
+class _GiftBoxRowContent extends StatelessWidget {
+  const _GiftBoxRowContent({
+    required this.verticalOffset,
+    required this.collectedChests,
+    required this.textStyle,
+    required this.maxPoints,
+    required this.milestones,
+    required this.currentPoints,
+    required this.textWidth,
+    required this.progressWidth,
+    required this.circleRadius,
+  });
+
+  final double verticalOffset;
+  final int collectedChests;
+  final TextStyle textStyle;
+  final int maxPoints;
+  final List<int> milestones;
+  final int currentPoints;
+  final double textWidth;
+  final double progressWidth;
+  final double circleRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        _PointsIndicatorText(
+          verticalOffset: verticalOffset,
+          collectedChests: collectedChests,
+          textStyle: textStyle,
+          maxPoints: maxPoints,
+        ),
+
+        ...milestones.map((milestone) {
+          final milestoneReached = currentPoints >= milestone;
+          final double calculatedMaxPoints = (milestones.last + 20).toDouble();
+          final factor = milestone / calculatedMaxPoints;
+          final centerX =
+              textWidth +
+              (progressWidth * factor).clamp(
+                circleRadius,
+                progressWidth - circleRadius,
+              );
+          return _ChestBoxWidget(
+            centerX: centerX,
+            milestoneReached: milestoneReached,
+          );
+        }),
+      ],
     );
   }
 }
