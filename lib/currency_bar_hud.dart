@@ -26,9 +26,8 @@ class CurrencyBarHud extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF241F0F).withOpacity(0.4),
+                    color: const Color(0xFF241F0F).withValues(alpha: 0.4),
                     blurRadius: 5,
-                    spreadRadius: 0,
                     offset: const Offset(0, 4),
                   ),
                 ],
@@ -41,8 +40,6 @@ class CurrencyBarHud extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Colors.white, AppColors.darkMustard],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
                     ),
                     borderRadius: BorderRadius.circular(35),
                   ),
@@ -58,10 +55,10 @@ class CurrencyBarHud extends StatelessWidget {
               height: 28,
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: EdgeInsets.only(right: 8.0),
+                padding: const EdgeInsets.only(right: 8.0),
                 child: Text(
                   '$amount',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -99,7 +96,7 @@ class CurrencyBarHud extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.darkGreen),
                   // BURAYA YEŞİL VE BEYAZ GRADYAN EKLENDİ
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [AppColors.green, AppColors.whitishGreen],
                     begin: Alignment.bottomCenter, // Gradyan başlangıç yönü
                     end: Alignment.topCenter, // Gradyan bitiş yönü
@@ -108,7 +105,7 @@ class CurrencyBarHud extends StatelessWidget {
                   shape: BoxShape.circle, // Yuvarlak şekil
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       spreadRadius: 1,
                       blurRadius: 3,
                       offset: const Offset(0, 2),

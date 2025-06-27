@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:gacha/animated_grid_box_with_provider.dart';
 import 'package:gacha/app_colors.dart';
 import 'package:gacha/gacha_hud.dart';
+import 'package:gacha/game_item.dart';
 import 'package:gacha/gift_box_row.dart';
-import 'package:gacha/grid_state_notifier.dart';
+import 'package:gacha/grid_state_notifier.dart'; // Make sure this import is correct
 import 'package:gacha/reward_progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:gacha/game_item.dart';
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 
 class GachaPage extends StatelessWidget {
   const GachaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final currentPoints = 80;
-    final items = getMockGameItems();
-    final milestones = [40, 80, 120, 160];
-    final maxPoints = 75;
-    final collectedChests = 44;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -27,12 +22,12 @@ class GachaPage extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       body: DecoratedBox(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
-            image: const AssetImage('assets/background.png'),
+            image: AssetImage('assets/background.png'),
             fit: BoxFit.cover,
           ),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [AppColors.darkPurple, AppColors.purple],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -40,27 +35,32 @@ class GachaPage extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: _GachaPageContents(
-            milestones: milestones,
-            currentPoints: currentPoints,
-            maxPoints: maxPoints,
-            collectedChests: collectedChests,
-            items: items,
+          child: Consumer<GridStateNotifier>(
+            builder: (context, gridStateNotifier, child) {
+              return _GachaPageContents(
+                milestones: gridStateNotifier.milestones,
+                currentPoints: gridStateNotifier.currentPoints,
+                maxPoints: gridStateNotifier.maxPoints,
+                collectedChests: gridStateNotifier.collectedChests,
+                items: gridStateNotifier.items,
+              );
+            },
           ),
         ),
       ),
-      floatingActionButton: _GachaPageButtons(),
+      floatingActionButton: const _GachaPageButtons(),
     );
   }
 }
 
 class _GachaPageButtons extends StatelessWidget {
-  const _GachaPageButtons({super.key});
+  const _GachaPageButtons();
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 50,
+      // 'spacing' is not a direct property of Row.
+      // You can use SizedBox for spacing between children.
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FloatingActionButton(
@@ -69,6 +69,7 @@ class _GachaPageButtons extends StatelessWidget {
           foregroundColor: Colors.white,
           child: const Icon(Icons.shuffle),
         ),
+        const SizedBox(width: 50), // Added spacing
         FloatingActionButton(
           onPressed: spinTenTimes(context),
           backgroundColor: AppColors.purple,
@@ -82,7 +83,6 @@ class _GachaPageButtons extends StatelessWidget {
 
 class _GachaPageContents extends StatelessWidget {
   const _GachaPageContents({
-    super.key,
     required this.milestones,
     required this.currentPoints,
     required this.maxPoints,
@@ -94,25 +94,32 @@ class _GachaPageContents extends StatelessWidget {
   final int currentPoints;
   final int maxPoints;
   final int collectedChests;
-  final List<GameItem> items;
+  final List<GameItem> items; // GameItem definition is now in GridStateNotifier
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 15,
+      // 'spacing' is not a direct property of Column.
+      // You can use SizedBox for spacing between children.
       children: [
-        GachaHud(),
+        const GachaHud(),
+        const SizedBox(height: 15), // Added spacing
         GiftBoxRow(
           milestones: milestones,
           currentPoints: currentPoints,
           maxPoints: maxPoints,
           collectedChests: collectedChests,
         ),
+        const SizedBox(height: 15), // Added spacing
         RewardProgressBarWithMilestones(
           currentPoints: currentPoints,
           milestones: milestones,
         ),
-        AnimatedGridBoxWithProvider(gameItems: items),
+        const SizedBox(height: 15), // Added spacing
+        Expanded(
+          // Use Expanded to ensure the grid takes available space
+          child: AnimatedGridBoxWithProvider(gameItems: items),
+        ),
       ],
     );
   }

@@ -39,7 +39,6 @@ class AnimatedGridBoxWithProvider extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: itemCountPerRow,
-                childAspectRatio: 1.0,
               ),
               itemCount: 16,
               itemBuilder: (context, index) {
@@ -184,7 +183,7 @@ class GlowContainer extends StatelessWidget {
         color: baseColor,
         borderRadius: BorderRadius.circular(8),
         border: (isHighlighted || isAnimated)
-            ? GradientBoxBorder(
+            ? const GradientBoxBorder(
                 width: 3,
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -224,7 +223,7 @@ class GridContent extends StatelessWidget {
             height: 50,
           )
         else
-          Icon(Icons.category, size: 50, color: Colors.white54),
+          const Icon(Icons.category, size: 50, color: Colors.white54),
       ],
     );
   }
@@ -250,7 +249,6 @@ class MainGridContainer extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.7),
-            spreadRadius: 0,
             blurRadius: 12.8,
             offset: const Offset(0, 6),
           ),
@@ -265,14 +263,12 @@ class MainGridContainer extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: AppColors.whitishPurple.withValues(alpha: 0.7),
-              spreadRadius: 0,
               blurRadius: 12.8,
               offset: const Offset(6, 6),
               inset: true,
             ),
             BoxShadow(
               color: AppColors.lightPurple.withValues(alpha: 0.7),
-              spreadRadius: 0,
               blurRadius: 12.8,
               inset: true,
               offset: const Offset(-6, -6),
@@ -295,7 +291,6 @@ class MainGridContainer extends StatelessWidget {
                 child: Center(child: child),
               ),
               Align(
-                alignment: Alignment.center,
                 child: SizedBox(
                   width: centerBoxSize,
                   height: centerBoxSize,
@@ -336,7 +331,7 @@ class DotsRow extends StatelessWidget {
   factory DotsRow.lightThenPlain({int count = 6}) {
     final List<Widget> dots = [];
     for (int i = 0; i < count; i++) {
-      if (i % 2 == 0) {
+      if (i.isEven) {
         dots.add(ShiningDot.light());
       } else {
         dots.add(ShiningDot.plain());
@@ -348,7 +343,7 @@ class DotsRow extends StatelessWidget {
   factory DotsRow.plainThenLight({int count = 6}) {
     final List<Widget> dots = [];
     for (int i = 0; i < count; i++) {
-      if (i % 2 == 0) {
+      if (i.isEven) {
         dots.add(ShiningDot.plain());
       } else {
         dots.add(ShiningDot.light());

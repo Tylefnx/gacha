@@ -28,12 +28,12 @@ class GameLinearBar extends StatefulWidget {
     height: height,
     percent: percent,
     center: center,
-    color: LinearGradient(
+    color: const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [Color(0xFF7FD97A), Color(0xFF42B23C)],
     ),
-    borderColor: Color(0xFF42B23C),
+    borderColor: const Color(0xFF42B23C),
   );
   factory GameLinearBar.red({
     required double width,
@@ -45,12 +45,12 @@ class GameLinearBar extends StatefulWidget {
     height: height,
     percent: percent,
     center: center,
-    color: LinearGradient(
+    color: const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [Color(0xFFE98080), Color(0xFFEF3B19)],
     ),
-    borderColor: Color(0xFFEF3B19),
+    borderColor: const Color(0xFFEF3B19),
   );
 
   factory GameLinearBar.yellow({
@@ -63,12 +63,12 @@ class GameLinearBar extends StatefulWidget {
     height: height,
     percent: percent,
     center: center,
-    color: LinearGradient(
+    color: const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [Color(0xFFF2E294), Color(0xFFEFB919)],
     ),
-    borderColor: Color(0xFFEFB919),
+    borderColor: const Color(0xFFEFB919),
   );
 
   factory GameLinearBar.percent({
@@ -139,15 +139,15 @@ class _GameLinearBarState extends State<GameLinearBar> {
       height: widget.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: widget.borderColor, width: 1),
+        border: Border.all(color: widget.borderColor),
       ),
       child: Container(
         width: widget.width - 1,
         height: widget.height - 1,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.black, width: 1),
-          color: widget.borderColor.withOpacity(0.1),
+          border: Border.all(),
+          color: widget.borderColor.withValues(alpha: 0.1),
         ),
         child: Stack(
           children: [
@@ -178,9 +178,9 @@ class _GameLinearBarState extends State<GameLinearBar> {
                               child: Container(
                                 height: widget.height - 6,
                                 width: 6,
-                                margin: EdgeInsets.only(right: 6),
+                                margin: const EdgeInsets.only(right: 6),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.09),
+                                  color: Colors.white.withValues(alpha: 0.09),
                                 ),
                               ),
                             ),
@@ -192,7 +192,7 @@ class _GameLinearBarState extends State<GameLinearBar> {
                 ),
               ),
             ),
-            Align(alignment: Alignment.center, child: widget.center),
+            Align(child: widget.center),
           ],
         ),
       ),

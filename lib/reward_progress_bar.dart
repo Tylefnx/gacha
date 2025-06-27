@@ -21,11 +21,11 @@ class RewardProgressBarWithMilestones extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double barWidth = constraints.maxWidth;
-        final double offset = 0.1;
+        const double offset = 0.1;
         final double progress =
             (currentPoints / (milestones.last * 1.25)) + offset;
 
-        var createdMileStoneCircles = milestones.map((milestone) {
+        final createdMileStoneCircles = milestones.map((milestone) {
           return Positioned(
             left:
                 ((barWidth * (milestone / (milestones.last * 1.25))) -
@@ -110,7 +110,7 @@ class _BuildMilestoneCircle extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.4),
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             blurRadius: 4,
           ),
         ],
@@ -122,9 +122,7 @@ class _BuildMilestoneCircle extends StatelessWidget {
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 12,
-          shadows: [
-            Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),
-          ],
+          shadows: [Shadow(offset: Offset(1, 1), blurRadius: 2)],
         ),
       ),
     );

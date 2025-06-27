@@ -25,7 +25,7 @@ class GiftBoxRow extends StatelessWidget {
 
         const double circleRadius = 15;
 
-        final textStyle = const TextStyle(
+        const textStyle = TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -43,7 +43,7 @@ class GiftBoxRow extends StatelessWidget {
 
         final double progressWidth = totalWidth - textWidth;
 
-        final double containerHeight = circleRadius * 2 + 16;
+        const double containerHeight = circleRadius * 2 + 16;
         final double verticalOffset = (containerHeight / 2) - (tp.height / 2);
 
         return SizedBox(
@@ -105,7 +105,6 @@ class _ChestBoxWidget extends StatelessWidget {
           ),
 
           borderRadius: BorderRadius.circular(5),
-          shape: BoxShape.rectangle,
           color: milestoneReached ? Colors.grey : AppColors.yellow,
           border: Border.all(
             color: milestoneReached ? Colors.white : AppColors.yellow,

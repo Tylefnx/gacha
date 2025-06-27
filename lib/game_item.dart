@@ -37,18 +37,18 @@ class GameItem {
       type: int.tryParse(map['type'].toString()),
       limit: int.tryParse(map['limit'].toString()),
       price: int.tryParse(map['price'].toString()),
-      header: map['header'],
+      header: map['header'].toString(),
       bottom: map['bottom'].toString(),
-      name: map['name'],
-      image: map['image'],
-      imageFile: map['imageFile'],
-      description: map['description'],
+      name: map['name'].toString(),
+      image: map['image'].toString(),
+      imageFile: map['imageFile'].toString(),
+      description: map['description'].toString(),
     );
   }
 }
 
 List<GameItem> getMockGameItems() {
-  GameItem item1 = GameItem(
+  final GameItem item1 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF3366CC,
@@ -62,7 +62,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item2 = GameItem(
+  final GameItem item2 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF3366CC,
@@ -76,7 +76,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item3 = GameItem(
+  final GameItem item3 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFFFF8C00,
@@ -90,7 +90,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item4 = GameItem(
+  final GameItem item4 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFFFF8C00,
@@ -105,7 +105,7 @@ List<GameItem> getMockGameItems() {
     price: 100,
   );
 
-  GameItem item5 = GameItem(
+  final GameItem item5 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFFFF8C00,
@@ -119,7 +119,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item6 = GameItem(
+  final GameItem item6 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF3366CC,
@@ -133,7 +133,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item7 = GameItem(
+  final GameItem item7 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF45B52F,
@@ -147,7 +147,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item8 = GameItem(
+  final GameItem item8 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF3366CC,
@@ -162,7 +162,7 @@ List<GameItem> getMockGameItems() {
     price: 100,
   );
 
-  GameItem item9 = GameItem(
+  final GameItem item9 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFFFF8C00,
@@ -177,7 +177,7 @@ List<GameItem> getMockGameItems() {
     price: 100,
   );
 
-  GameItem item10 = GameItem(
+  final GameItem item10 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF3366CC,
@@ -191,7 +191,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item11 = GameItem(
+  final GameItem item11 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFF6A0DAD,
@@ -205,7 +205,7 @@ List<GameItem> getMockGameItems() {
     limit: 5,
     price: 100,
   );
-  GameItem item12 = GameItem(
+  final GameItem item12 = GameItem(
     id: '1',
     quantity: 10,
     bgColor: 0xFFFF8C00,

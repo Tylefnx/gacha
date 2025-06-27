@@ -7,7 +7,10 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => GridStateNotifier(),
-      child: MaterialApp(home: GachaPage(), debugShowCheckedModeBanner: false),
+      child: const MaterialApp(
+        home: GachaPage(),
+        debugShowCheckedModeBanner: false,
+      ),
     ),
   );
 }
