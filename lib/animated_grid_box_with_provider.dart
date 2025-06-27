@@ -1,12 +1,12 @@
 // ignore_for_file: unused_element_parameter
 
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:gacha/app_colors.dart';
+import 'package:gacha/game_item.dart'; // GameItem sınıfını dahil et
 import 'package:gacha/grid_state_notifier.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
-import 'package:gacha/game_item.dart'; // GameItem sınıfını dahil et
 
 class AnimatedGridBoxWithProvider extends StatelessWidget {
   final List<GameItem> gameItems;
