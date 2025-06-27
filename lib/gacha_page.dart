@@ -55,6 +55,45 @@ class GachaPage extends StatelessWidget {
   }
 }
 
+class _GachaPageContents extends StatelessWidget {
+  final List<int> milestones;
+  final int currentPoints;
+  final int maxPoints;
+  final int collectedChests;
+  final List<GameItem> items;
+
+  const _GachaPageContents({
+    required this.milestones,
+    required this.currentPoints,
+    required this.maxPoints,
+    required this.collectedChests,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      children: [
+        const GachaHud(),
+        const SizedBox(height: 10),
+        GiftBoxRow(
+          milestones: milestones,
+          currentPoints: currentPoints,
+          maxPoints: maxPoints,
+          collectedChests: collectedChests,
+        ),
+        RewardProgressBarWithMilestones(
+          currentPoints: currentPoints,
+          milestones: milestones,
+        ),
+        const SizedBox(height: 10),
+        AnimatedGridBoxWithProvider(gameItems: items),
+      ],
+    );
+  }
+}
+
 class _GachaPageButtons extends StatelessWidget {
   const _GachaPageButtons();
 
@@ -81,45 +120,6 @@ class _GachaPageButtons extends StatelessWidget {
           foregroundColor: Colors.white,
           child: const Icon(Icons.access_time),
         ),
-      ],
-    );
-  }
-}
-
-class _GachaPageContents extends StatelessWidget {
-  final List<int> milestones;
-  final int currentPoints;
-  final int maxPoints;
-  final int collectedChests;
-  final List<GameItem> items;
-
-  const _GachaPageContents({
-    required this.milestones,
-    required this.currentPoints,
-    required this.maxPoints,
-    required this.collectedChests,
-    required this.items,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const GachaHud(),
-        const SizedBox(height: 15),
-        GiftBoxRow(
-          milestones: milestones,
-          currentPoints: currentPoints,
-          maxPoints: maxPoints,
-          collectedChests: collectedChests,
-        ),
-        const SizedBox(height: 15),
-        RewardProgressBarWithMilestones(
-          currentPoints: currentPoints,
-          milestones: milestones,
-        ),
-        const SizedBox(height: 15),
-        Expanded(child: AnimatedGridBoxWithProvider(gameItems: items)),
       ],
     );
   }
