@@ -87,8 +87,7 @@ class _GachaPageContents extends StatelessWidget {
           currentPoints: currentPoints,
           milestones: milestones,
         ),
-        const SizedBox(height: 10),
-        AnimatedGridBoxWithProvider(gameItems: items),
+        Expanded(child: AnimatedGridBoxWithProvider(gameItems: items)),
       ],
     );
   }
