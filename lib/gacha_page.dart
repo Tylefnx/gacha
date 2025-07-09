@@ -4,6 +4,7 @@ import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import 'package:gacha/animated_grid_box_with_provider.dart';
 import 'package:gacha/app_colors.dart';
 import 'package:gacha/gacha_hud.dart';
+import 'package:gacha/gacha_page_button.dart';
 import 'package:gacha/game_item.dart';
 import 'package:gacha/gift_box_row.dart';
 import 'package:gacha/grid_state_notifier.dart';
@@ -22,35 +23,49 @@ class GachaPage extends StatelessWidget {
         backgroundColor: const Color(0xFF330066),
         foregroundColor: Colors.white,
       ),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background.png'),
-            fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          DecoratedBox(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background.png'),
+                fit: BoxFit.cover,
+              ),
+              gradient: LinearGradient(
+                colors: [AppColors.darkPurple, AppColors.purple],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 15,
+                bottom: 65,
+              ),
+              child: Consumer<GridStateNotifier>(
+                builder: (context, gridStateNotifier, child) {
+                  return _GachaPageContents(
+                    milestones: gridStateNotifier.milestones,
+                    currentPoints: gridStateNotifier.currentPoints,
+                    maxPoints: gridStateNotifier.maxPoints,
+                    collectedChests: gridStateNotifier.collectedChests,
+                    items: gridStateNotifier.items,
+                  );
+                },
+              ),
+            ),
           ),
-          gradient: LinearGradient(
-            colors: [AppColors.darkPurple, AppColors.purple],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          const Padding(
+            padding: EdgeInsets.only(bottom: 50.0),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: _GachaPageButtons(),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Consumer<GridStateNotifier>(
-            builder: (context, gridStateNotifier, child) {
-              return _GachaPageContents(
-                milestones: gridStateNotifier.milestones,
-                currentPoints: gridStateNotifier.currentPoints,
-                maxPoints: gridStateNotifier.maxPoints,
-                collectedChests: gridStateNotifier.collectedChests,
-                items: gridStateNotifier.items,
-              );
-            },
-          ),
-        ),
+        ],
       ),
-      floatingActionButton:
-          const _GachaPageButtons(), // Changed to instantiate without const
     );
   }
 }
@@ -76,18 +91,30 @@ class _GachaPageContents extends StatelessWidget {
       spacing: 10,
       children: [
         const GachaHud(),
-        const SizedBox(height: 10),
-        GiftBoxRow(
-          milestones: milestones,
-          currentPoints: currentPoints,
-          maxPoints: maxPoints,
-          collectedChests: collectedChests,
+        const SizedBox(height: 5),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 17.0),
+          child: GiftBoxRow(
+            milestones: milestones,
+            currentPoints: currentPoints,
+            maxPoints: maxPoints,
+            collectedChests: collectedChests,
+          ),
         ),
-        RewardProgressBarWithMilestones(
-          currentPoints: currentPoints,
-          milestones: milestones,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22.5),
+          child: RewardProgressBarWithMilestones(
+            currentPoints: currentPoints,
+            milestones: milestones,
+          ),
         ),
-        Expanded(child: AnimatedGridBoxWithProvider(gameItems: items)),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 7.0),
+            child: AnimatedGridBoxWithProvider(gameItems: items),
+          ),
+        ),
+        const SizedBox(height: 30),
       ],
     );
   }
@@ -102,22 +129,16 @@ class _GachaPageButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      spacing: 10,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FloatingActionButton(
-          onPressed: () =>
-              _notifier(context).startSpinningAndSelect(), // Direct call
-          backgroundColor: AppColors.purple,
-          foregroundColor: Colors.white,
-          child: const Icon(Icons.shuffle),
+        SpinButton(
+          imagePath: 'assets/spin_button.png',
+          onTap: () => _notifier(context).startSpinningAndSelect(),
         ),
-        const SizedBox(width: 50),
-        FloatingActionButton(
-          onPressed: () =>
-              _notifier(context).spinMultipleTimes(10), // Direct call
-          backgroundColor: AppColors.purple,
-          foregroundColor: Colors.white,
-          child: const Icon(Icons.access_time),
+        SpinButton(
+          imagePath: 'assets/spin_ten_times_button.png',
+          onTap: () => _notifier(context).spinMultipleTimes(10),
         ),
       ],
     );

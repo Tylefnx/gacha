@@ -5,7 +5,6 @@ import 'package:gacha/game_item.dart';
 import 'package:gacha/get_mock_game_items.dart';
 
 class GridStateNotifier extends ChangeNotifier {
-  // Animasyon ve Vurgulama Durumu
   int? _animatedBoxIndex;
   int? get animatedBoxIndex => _animatedBoxIndex;
 
@@ -17,7 +16,6 @@ class GridStateNotifier extends ChangeNotifier {
   final List<int> _availableIndices = [];
   List<int> get availableIndices => _availableIndices;
 
-  // Oyun Verisi Özellikleri
   int _currentPoints;
   int get currentPoints => _currentPoints;
 
@@ -43,7 +41,6 @@ class GridStateNotifier extends ChangeNotifier {
   }
 
   void _initAvailableIndices() {
-    // Merkezdeki kutular ([5, 6, 9, 10]) hariç tüm indeksleri ekler
     _availableIndices.addAll(
       List.generate(16, (i) => i).where((i) => ![5, 6, 9, 10].contains(i)),
     );

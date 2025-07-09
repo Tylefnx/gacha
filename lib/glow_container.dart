@@ -19,34 +19,36 @@ class GlowContainer extends StatelessWidget {
   final bool isHighlighted;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        gradient: RadialGradient(
-          colors: [Colors.white, baseColor],
-          radius: 0.4,
-        ),
-        color: baseColor,
-        borderRadius: BorderRadius.circular(8),
-        border: (isHighlighted || isAnimated)
-            ? const GradientBoxBorder(
-                width: 3,
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [AppColors.darkYellow, AppColors.darkerOrange],
-                ),
-              )
-            : Border.all(color: borderColor, width: 3),
-        boxShadow: [
-          BoxShadow(
-            color: borderColor.withValues(alpha: 0.7),
-            blurRadius: 10,
-            spreadRadius: 1,
+    return FittedBox(
+      child: Container(
+        margin: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            colors: [Colors.white, baseColor],
+            radius: 0.4,
           ),
-        ],
+          color: baseColor,
+          borderRadius: BorderRadius.circular(8),
+          border: (isHighlighted || isAnimated)
+              ? const GradientBoxBorder(
+                  width: 3,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppColors.darkYellow, AppColors.darkerOrange],
+                  ),
+                )
+              : Border.all(color: borderColor, width: 3),
+          boxShadow: [
+            BoxShadow(
+              color: borderColor.withValues(alpha: 0.7),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

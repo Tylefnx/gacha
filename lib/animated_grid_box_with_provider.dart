@@ -25,7 +25,7 @@ class AnimatedGridBoxWithProvider extends StatelessWidget {
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final gridWidth = constraints.maxWidth.clamp(300.0, 600.0);
+          final gridWidth = constraints.maxWidth.clamp(250.0, 500.0);
           const margin = 12.0;
           const itemCountPerRow = 4;
           final itemSize =
@@ -35,7 +35,6 @@ class AnimatedGridBoxWithProvider extends StatelessWidget {
           return MainGridContainer(
             centerBoxSize: centerBoxSize,
             child: GridView.builder(
-              shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: itemCountPerRow,
@@ -77,14 +76,13 @@ class MainGridContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: const Color(0xFF1D1C53),
         borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
             blurRadius: 12.8,
             offset: const Offset(0, 6),
           ),
@@ -113,18 +111,18 @@ class MainGridContainerContents extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1953).withOpacity(0.2),
+        color: const Color(0xFF1A1953).withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(36),
         border: Border.all(color: AppColors.purpleAccent, width: 4),
         boxShadow: [
           BoxShadow(
-            color: AppColors.whitishPurple.withOpacity(0.7),
+            color: AppColors.whitishPurple.withValues(alpha: 0.7),
             blurRadius: 12.8,
             offset: const Offset(6, 6),
             inset: true,
           ),
           BoxShadow(
-            color: AppColors.lightPurple.withOpacity(0.7),
+            color: AppColors.lightPurple.withValues(alpha: 0.7),
             blurRadius: 12.8,
             inset: true,
             offset: const Offset(-6, -6),
@@ -165,7 +163,7 @@ class MainGridContainerCenter extends StatelessWidget {
       height: centerBoxSize,
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(25.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
