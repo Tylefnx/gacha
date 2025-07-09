@@ -18,7 +18,7 @@ class GridStateNotifier extends ChangeNotifier {
 
   int _currentPoints;
   int get currentPoints => _currentPoints;
-
+  bool spinningCooldown = false;
   final List<GameItem> _items;
   List<GameItem> get items => _items;
 
@@ -58,6 +58,8 @@ class GridStateNotifier extends ChangeNotifier {
   }
 
   Future<void> startSpinningAndSelect() async {
+    if (spinningCooldown) return;
+    spinningCooldown = true;
     _animatedBoxIndex = null;
     notifyListeners();
 
@@ -107,6 +109,7 @@ class GridStateNotifier extends ChangeNotifier {
     notifyListeners();
 
     _lastSelectedIndex = finalSelectedIndex;
+    spinningCooldown = false;
   }
 
   Future<void> spinMultipleTimes(int times) async {
