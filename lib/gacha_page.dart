@@ -88,12 +88,10 @@ class _GachaPageContents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 10,
       children: [
         const GachaHud(),
-        const SizedBox(height: 5),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 17.0),
+          padding: const EdgeInsets.symmetric(horizontal: 17.0, vertical: 20.0),
           child: GiftBoxRow(
             milestones: milestones,
             currentPoints: currentPoints,
@@ -108,13 +106,10 @@ class _GachaPageContents extends StatelessWidget {
             milestones: milestones,
           ),
         ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 7.0),
-            child: AnimatedGridBoxWithProvider(gameItems: items),
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 25.0),
+          child: AnimatedGridBoxWithProvider(gameItems: items),
         ),
-        const SizedBox(height: 30),
       ],
     );
   }
