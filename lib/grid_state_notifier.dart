@@ -109,7 +109,7 @@ class GridStateNotifier extends ChangeNotifier {
     notifyListeners();
 
     _lastSelectedIndex = finalSelectedIndex;
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     spinningCooldown = false;
   }
 
